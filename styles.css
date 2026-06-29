@@ -39,7 +39,7 @@ body {
 }
 
 .page {
-  width: min(1320px, 100%);
+  width: min(1120px, 100%);
   margin: 0 auto;
   padding:
     max(2rem, env(safe-area-inset-top))
@@ -77,8 +77,19 @@ body {
 
 @media (min-width: 920px) {
   .grid {
-    grid-template-columns: repeat(5, 1fr);
-    gap: 1.25rem;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1.5rem;
+  }
+
+  .grid > li:nth-child(1),
+  .grid > li:nth-child(2),
+  .grid > li:nth-child(3) {
+    grid-column: span 2;
+  }
+
+  .grid > li:nth-child(4),
+  .grid > li:nth-child(5) {
+    grid-column: span 3;
   }
 }
 
