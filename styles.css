@@ -77,19 +77,14 @@ body {
 
 @media (min-width: 920px) {
   .grid {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1.5rem;
   }
 
-  .grid > li:nth-child(1),
-  .grid > li:nth-child(2),
-  .grid > li:nth-child(3) {
-    grid-column: span 2;
-  }
-
-  .grid > li:nth-child(4),
   .grid > li:nth-child(5) {
-    grid-column: span 3;
+    grid-column: 1 / -1;
+    width: calc((100% - 4.5rem) / 4);
+    margin-inline: auto;
   }
 }
 
