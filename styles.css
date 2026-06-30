@@ -286,54 +286,32 @@ body {
 .intro {
   max-width: 34rem;
   margin: 0 auto clamp(1.75rem, 4vw, 2.75rem);
-  padding-top: calc(var(--nav-btn-size) + 0.5rem + var(--nav-title-descender));
+  padding-top: calc(var(--nav-btn-size) + 0.5rem);
   text-align: center;
 }
 
+@media (min-width: 560px) {
+  .intro {
+    padding-top: calc(var(--nav-btn-size) * 2 + 1rem);
+  }
+}
+
 .intro h1 {
-  position: fixed;
-  top: var(--nav-inset-top);
-  left: max(1rem, env(safe-area-inset-left));
-  right: max(1rem, env(safe-area-inset-right));
-  z-index: 90;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  height: var(--nav-btn-size);
-  padding: 0 calc(var(--nav-btn-size) + 0.5rem);
+  margin-bottom: 0.5rem;
   font-family: "Michroma", var(--font);
   font-size: clamp(1.2rem, 3.2vw, 1.55rem);
   font-weight: 400;
   letter-spacing: 0.1em;
-  line-height: 1;
+  line-height: 1.2;
   text-transform: uppercase;
   color: transparent;
   -webkit-text-stroke: 1.1px rgba(232, 236, 242, 0.94);
   paint-order: stroke fill;
-  overflow: visible;
-  transform: translateY(var(--nav-title-descender));
-  pointer-events: none;
 }
 
 @media (max-width: 559px) {
   .site-actions {
     flex-direction: row;
-  }
-
-  .intro {
-    padding-top: calc(var(--nav-btn-size) + 0.5rem);
-  }
-
-  .intro h1 {
-    position: static;
-    z-index: auto;
-    display: block;
-    height: auto;
-    padding: 0;
-    transform: none;
-    pointer-events: auto;
-    margin-bottom: 0.5rem;
-    line-height: 1.2;
   }
 }
 
