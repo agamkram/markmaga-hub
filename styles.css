@@ -32,13 +32,25 @@ html {
 
 body {
   font-family: var(--font);
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(80, 120, 200, 0.12), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(120, 80, 200, 0.06), transparent 50%),
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
   line-height: 1.5;
   min-height: 100dvh;
+}
+
+.starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(80, 120, 200, 0.1), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(120, 80, 200, 0.05), transparent 50%),
+    url("images/starfield.svg");
+  background-size: cover, cover, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat;
 }
 
 .site-nav {
@@ -258,6 +270,8 @@ body {
 }
 
 .page {
+  position: relative;
+  z-index: 1;
   width: min(1120px, 100%);
   margin: 0 auto;
   padding:
