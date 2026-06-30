@@ -239,7 +239,7 @@ body {
   width: min(1120px, 100%);
   margin: 0 auto;
   padding:
-    calc(var(--nav-inset-top) + var(--nav-btn-size))
+    var(--nav-inset-top)
     max(1.25rem, env(safe-area-inset-right))
     max(2.5rem, env(safe-area-inset-bottom))
     max(1.25rem, env(safe-area-inset-left));
@@ -252,6 +252,10 @@ body {
 }
 
 .intro h1 {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: var(--nav-btn-size);
   font-size: clamp(1.35rem, 3.5vw, 1.75rem);
   font-weight: 600;
   letter-spacing: -0.02em;
