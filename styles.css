@@ -19,6 +19,8 @@
   --font: "DM Sans", system-ui, sans-serif;
   --shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
   --transition: 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-inset-top: max(1rem, env(safe-area-inset-top));
+  --nav-btn-size: 2.5rem;
 }
 
 html {
@@ -40,21 +42,21 @@ body {
 
 .site-nav {
   position: fixed;
-  top: max(1rem, env(safe-area-inset-top));
+  top: var(--nav-inset-top);
   left: max(1rem, env(safe-area-inset-left));
   z-index: 100;
 }
 
 .x-link {
   position: fixed;
-  top: max(1rem, env(safe-area-inset-top));
+  top: var(--nav-inset-top);
   right: max(1rem, env(safe-area-inset-right));
   z-index: 100;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--nav-btn-size);
+  height: var(--nav-btn-size);
   padding: 0.5rem;
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -89,8 +91,8 @@ body {
   flex-direction: column;
   justify-content: center;
   gap: 5px;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--nav-btn-size);
+  height: var(--nav-btn-size);
   padding: 0.5rem;
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -237,7 +239,7 @@ body {
   width: min(1120px, 100%);
   margin: 0 auto;
   padding:
-    max(1rem, env(safe-area-inset-top))
+    calc(var(--nav-inset-top) + var(--nav-btn-size))
     max(1.25rem, env(safe-area-inset-right))
     max(2.5rem, env(safe-area-inset-bottom))
     max(1.25rem, env(safe-area-inset-left));
