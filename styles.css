@@ -248,20 +248,28 @@ body {
 .intro {
   max-width: 34rem;
   margin: 0 auto clamp(1.75rem, 4vw, 2.75rem);
+  padding-top: calc(var(--nav-btn-size) + 0.5rem);
   text-align: center;
 }
 
 .intro h1 {
+  position: fixed;
+  top: var(--nav-inset-top);
+  left: max(1rem, env(safe-area-inset-left));
+  right: max(1rem, env(safe-area-inset-right));
+  z-index: 90;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  min-height: var(--nav-btn-size);
+  height: var(--nav-btn-size);
+  padding:
+    0 calc(var(--nav-btn-size) + 0.5rem) 1px;
   font-size: clamp(1.35rem, 3.5vw, 1.75rem);
   font-weight: 600;
   letter-spacing: -0.02em;
-  line-height: 1.2;
+  line-height: 1;
   color: var(--text);
-  margin-bottom: 0.5rem;
+  pointer-events: none;
 }
 
 .intro p {
