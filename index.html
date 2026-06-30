@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="description" content="My web apps — Mark Maga." />
   <meta name="theme-color" content="#06080d" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <title>Mark Maga</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,14 +16,61 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <nav class="site-nav" aria-label="Site">
+    <button
+      type="button"
+      class="menu-btn"
+      id="menu-btn"
+      aria-expanded="false"
+      aria-controls="site-menu"
+      aria-label="Open menu"
+    >
+      <span class="menu-btn__bar" aria-hidden="true"></span>
+      <span class="menu-btn__bar" aria-hidden="true"></span>
+      <span class="menu-btn__bar" aria-hidden="true"></span>
+    </button>
+    <div class="menu-dropdown" id="site-menu" hidden>
+      <button type="button" class="menu-item" id="about-btn">About</button>
+      <a class="menu-item" href="mailto:markmagadotcom@gmail.com">Contact</a>
+    </div>
+  </nav>
+
+  <a
+    class="x-link"
+    href="https://x.com/markemaga"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Mark Maga on X"
+  >
+    <svg class="x-link__icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.138 17.5h2.036L6.324 4.126H4.298z"
+      />
+    </svg>
+  </a>
+
+  <dialog id="about-dialog" class="about-dialog" aria-labelledby="about-dialog-title">
+    <div class="about-dialog__inner">
+      <h2 id="about-dialog-title">About</h2>
+      <p>More coming soon.</p>
+      <button type="button" class="about-dialog__close" id="about-close">Close</button>
+    </div>
+  </dialog>
+
   <div class="page">
-    <header class="hero">
-      <h1>My web apps.</h1>
+    <header class="intro">
+      <h1>Web apps</h1>
+      <p>Tap Open, then Add to Home Screen on iPhone or Android.</p>
+      <p class="intro-cta">
+        Built with Grok.
+        <a href="mailto:markmagadotcom@gmail.com">Can we build you one?</a>
+      </p>
     </header>
 
     <main>
       <ul class="grid">
-        <li>
+        <li class="grid-item">
           <a class="card" href="https://moon-phase-app-gamma.vercel.app" data-app="moon-phase-app" aria-label="Today's Moon">
             <span class="card-media card-media--square">
               <img
@@ -38,9 +86,10 @@
               </span>
             </span>
           </a>
+          <p class="card-hint">Drag slider for phases · tap moon for red · pinch to zoom · idealized shading</p>
         </li>
 
-        <li>
+        <li class="grid-item">
           <a class="card" href="https://solar-light-app.vercel.app" data-app="solar-light-app" aria-label="Solar Light">
             <span class="card-media card-media--square">
               <img
@@ -56,9 +105,10 @@
               </span>
             </span>
           </a>
+          <p class="card-hint">Slide time to see sunlight as % of solar noon · tap Edit to set your location</p>
         </li>
 
-        <li>
+        <li class="grid-item">
           <a class="card" href="https://moon-phase-beta-five.vercel.app" data-app="moon-phase-beta" aria-label="The Moon">
             <span class="card-media card-media--square">
               <img
@@ -74,9 +124,10 @@
               </span>
             </span>
           </a>
+          <p class="card-hint">Drag slider for phases · tap moon for red · pinch to zoom · tap distance for units</p>
         </li>
 
-        <li>
+        <li class="grid-item">
           <a class="card" href="https://satellite-app-wheat.vercel.app" data-app="orbital-view" aria-label="Orbital View">
             <span class="card-media card-media--square">
               <img
@@ -92,9 +143,10 @@
               </span>
             </span>
           </a>
+          <p class="card-hint">Drag slider for orbital patterns · tap Constellations to select</p>
         </li>
 
-        <li>
+        <li class="grid-item">
           <a class="card" href="https://elevation-kappa.vercel.app" data-app="us-elevation-map" aria-label="US Elevation Map">
             <span class="card-media card-media--square">
               <img
@@ -110,6 +162,7 @@
               </span>
             </span>
           </a>
+          <p class="card-hint">Tap the map for elevation in feet and meters · toggle Map or Satellite</p>
         </li>
       </ul>
     </main>
@@ -118,5 +171,58 @@
       <p>More coming soon.</p>
     </footer>
   </div>
+
+  <script>
+    (function () {
+      const menuBtn = document.getElementById("menu-btn");
+      const siteMenu = document.getElementById("site-menu");
+      const aboutBtn = document.getElementById("about-btn");
+      const aboutDialog = document.getElementById("about-dialog");
+      const aboutClose = document.getElementById("about-close");
+
+      function closeMenu() {
+        siteMenu.hidden = true;
+        menuBtn.setAttribute("aria-expanded", "false");
+        menuBtn.setAttribute("aria-label", "Open menu");
+      }
+
+      function openMenu() {
+        siteMenu.hidden = false;
+        menuBtn.setAttribute("aria-expanded", "true");
+        menuBtn.setAttribute("aria-label", "Close menu");
+      }
+
+      function toggleMenu() {
+        if (siteMenu.hidden) openMenu();
+        else closeMenu();
+      }
+
+      menuBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        toggleMenu();
+      });
+
+      aboutBtn.addEventListener("click", () => {
+        closeMenu();
+        aboutDialog.showModal();
+      });
+
+      aboutClose.addEventListener("click", () => aboutDialog.close());
+
+      aboutDialog.addEventListener("click", (event) => {
+        if (event.target === aboutDialog) aboutDialog.close();
+      });
+
+      document.addEventListener("click", (event) => {
+        if (siteMenu.hidden) return;
+        if (menuBtn.contains(event.target) || siteMenu.contains(event.target)) return;
+        closeMenu();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !siteMenu.hidden) closeMenu();
+      });
+    })();
+  </script>
 </body>
 </html>
