@@ -295,6 +295,28 @@ body {
   pointer-events: none;
 }
 
+@media (max-width: 559px) {
+  .site-actions {
+    flex-direction: row;
+  }
+
+  .intro {
+    padding-top: calc(var(--nav-btn-size) + 0.5rem);
+  }
+
+  .intro h1 {
+    position: static;
+    z-index: auto;
+    display: block;
+    height: auto;
+    padding: 0;
+    transform: none;
+    pointer-events: auto;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+}
+
 .intro p {
   font-size: clamp(0.875rem, 2.2vw, 0.95rem);
   line-height: 1.55;
