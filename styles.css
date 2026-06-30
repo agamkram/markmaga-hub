@@ -45,11 +45,12 @@ body {
   pointer-events: none;
   background-color: var(--bg);
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(80, 120, 200, 0.1), transparent 60%),
-    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(120, 80, 200, 0.05), transparent 50%),
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(80, 120, 200, 0.11), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(120, 80, 200, 0.055), transparent 50%),
+    radial-gradient(ellipse 45% 32% at 10% 88%, rgba(70, 110, 200, 0.07), transparent 68%),
     url("images/starfield.svg");
-  background-size: cover, cover, cover;
-  background-position: center, center, center;
+  background-size: cover, cover, cover, cover;
+  background-position: center, center, center, center;
   background-repeat: no-repeat;
 }
 
