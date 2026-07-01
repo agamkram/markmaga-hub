@@ -54,10 +54,11 @@ const APPS = [
     waitMs: 2000,
     geo: true,
     waitForPressure: true,
-    // Phone-width 16:9 — hub square cards zoom landscape previews (same as moon).
-    viewport: { width: 720, height: 405 },
+    // Match solar / elevation / orbital hub previews (720 square webp).
+    viewport: { width: 720, height: 720 },
     fitCover: true,
-    exportSize: { width: 2560, height: 1440 },
+    coverBoost: 1.08,
+    exportSize: { width: 720, height: 720 },
   },
 ];
 
@@ -118,7 +119,8 @@ async function capture(browser, app) {
   }
 
   if (app.fitCover) {
-    await page.evaluate(() => {
+    const coverBoost = app.coverBoost ?? 1;
+    await page.evaluate((boost) => {
       const appEl = document.getElementById("app");
       const stage = document.getElementById("fit-stage");
       if (!appEl || !stage) return;
@@ -129,9 +131,9 @@ async function capture(browser, app) {
       appEl.style.transform = "translate(-50%, -50%) scale(1)";
       const naturalH = appEl.offsetHeight;
       const naturalW = appEl.offsetWidth;
-      const scale = Math.max(availH / naturalH, availW / naturalW);
+      const scale = Math.max(availH / naturalH, availW / naturalW) * boost;
       appEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
-    });
+    }, coverBoost);
     await new Promise((r) => setTimeout(r, 200));
   }
 

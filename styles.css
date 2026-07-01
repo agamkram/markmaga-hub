@@ -421,6 +421,7 @@ body {
 
 .card-media--square {
   aspect-ratio: 1 / 1;
+  width: 100%;
 }
 
 .card-media img {
