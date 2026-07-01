@@ -7,19 +7,17 @@
   <meta name="theme-color" content="#06080d" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta name="apple-mobile-web-app-title" content="Mark Maga" />
   <title>Mark Maga</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Michroma&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Michroma&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
-  <div class="starfield" aria-hidden="true"></div>
-
   <nav class="site-nav" aria-label="Site">
     <button
       type="button"
@@ -94,13 +92,14 @@
       <ul class="grid">
         <li class="grid-item">
           <a class="card" href="https://themoon.markmaga.com" data-app="moon-phase-app" aria-label="Today's Moon">
-            <span class="card-media card-media--square">
+            <span class="card-media">
               <img
                 src="images/moon-phase-app.webp?v=3"
                 alt=""
                 width="720"
                 height="720"
-                loading="lazy"
+                loading="eager"
+                fetchpriority="high"
                 decoding="async"
               />
               <span class="card-overlay" aria-hidden="true">
@@ -113,13 +112,14 @@
 
         <li class="grid-item">
           <a class="card" href="https://solar.markmaga.com" data-app="solar-light-app" aria-label="Solar Light">
-            <span class="card-media card-media--square">
+            <span class="card-media">
               <img
                 src="images/solar-light-app.webp"
                 alt=""
                 width="720"
                 height="720"
-                loading="lazy"
+                loading="eager"
+                fetchpriority="high"
                 decoding="async"
               />
               <span class="card-overlay" aria-hidden="true">
@@ -132,13 +132,13 @@
 
         <li class="grid-item">
           <a class="card" href="https://moon.markmaga.com" data-app="moon-phase-beta" aria-label="The Moon">
-            <span class="card-media card-media--square">
+            <span class="card-media">
               <img
                 src="images/moon-phase-beta.webp?v=2"
                 alt=""
                 width="720"
                 height="720"
-                loading="lazy"
+                loading="eager"
                 decoding="async"
               />
               <span class="card-overlay" aria-hidden="true">
@@ -151,13 +151,13 @@
 
         <li class="grid-item">
           <a class="card" href="https://orbital.markmaga.com" data-app="orbital-view" aria-label="Orbital View">
-            <span class="card-media card-media--square">
+            <span class="card-media">
               <img
                 src="images/orbital-view.webp"
                 alt=""
                 width="720"
                 height="720"
-                loading="lazy"
+                loading="eager"
                 decoding="async"
               />
               <span class="card-overlay" aria-hidden="true">
@@ -170,7 +170,7 @@
 
         <li class="grid-item">
           <a class="card" href="https://air.markmaga.com" data-app="weight-of-air" aria-label="The Weight of Air and the Suction Cup">
-            <span class="card-media card-media--square">
+            <span class="card-media">
               <img
                 src="images/weight-of-air.webp?v=7"
                 alt=""
@@ -189,7 +189,7 @@
 
         <li class="grid-item">
           <a class="card" href="https://elevation.markmaga.com" data-app="us-elevation-map" aria-label="US Elevation Map">
-            <span class="card-media card-media--square">
+            <span class="card-media">
               <img
                 src="images/us-elevation-map.webp"
                 alt=""
@@ -261,7 +261,9 @@
       });
 
       document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && !siteMenu.hidden) closeMenu();
+        if (event.key !== "Escape") return;
+        if (!siteMenu.hidden) closeMenu();
+        if (aboutDialog.open) aboutDialog.close();
       });
     })();
   </script>

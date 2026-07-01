@@ -21,7 +21,6 @@
   --transition: 220ms cubic-bezier(0.22, 1, 0.36, 1);
   --nav-inset-top: max(1rem, env(safe-area-inset-top));
   --nav-btn-size: 2.5rem;
-  --nav-title-descender: 0.2em;
   --starfield-image:
     radial-gradient(ellipse 82% 52% at 50% -10%, rgba(80, 120, 200, 0.12), transparent 62%),
     radial-gradient(ellipse 62% 42% at 100% 0%, rgba(120, 80, 200, 0.06), transparent 52%),
@@ -35,26 +34,24 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   background-color: var(--bg);
-  background-image: var(--starfield-image);
-  background-size: cover, cover, cover, cover, cover;
-  background-position: center top, center top, center, center, center top;
-  background-repeat: no-repeat;
   min-height: 100%;
   min-height: -webkit-fill-available;
 }
 
 body {
+  position: relative;
   font-family: var(--font);
-  background: transparent;
   color: var(--text);
   line-height: 1.5;
   min-height: 100dvh;
   min-height: 100svh;
   min-height: -webkit-fill-available;
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.starfield {
+body::before {
+  content: "";
   position: fixed;
   z-index: 0;
   pointer-events: none;
@@ -64,14 +61,12 @@ body {
   height: 140vmax;
   min-width: calc(100vw + env(safe-area-inset-left, 0px) + env(safe-area-inset-right, 0px));
   min-height: calc(100lvh + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) translateZ(0);
   background-color: var(--bg);
   background-image: var(--starfield-image);
   background-size: cover, cover, cover, cover, cover;
   background-position: center top, center top, center, center, center top;
   background-repeat: no-repeat;
-  -webkit-transform: translate(-50%, -50%) translateZ(0);
-  will-change: transform;
 }
 
 .site-nav {
@@ -113,10 +108,6 @@ body {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.x-link {
-  color: #ffffff;
 }
 
 .cashapp-link {
@@ -385,8 +376,6 @@ body {
   color: var(--text-muted);
 }
 
-/* .card-purpose — optional second line (objective / purpose) */
-
 @media (min-width: 560px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
@@ -396,7 +385,7 @@ body {
 
 @media (min-width: 920px) {
   .grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
   }
 }
@@ -433,14 +422,10 @@ body {
 .card-media {
   position: relative;
   display: block;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  background: var(--bg-elevated);
-}
-
-.card-media--square {
   aspect-ratio: 1 / 1;
   width: 100%;
+  overflow: hidden;
+  background: var(--bg-elevated);
 }
 
 .card-media img {

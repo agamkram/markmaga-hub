@@ -1,0 +1,12 @@
+{
+  "name": "markmaga-hub",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node capture-screenshots.mjs",
+    "preview": "python3 -m http.server 8088"
+  },
+  "dependencies": {
+    "puppeteer-core": "^25.2.1"
+  }
+}

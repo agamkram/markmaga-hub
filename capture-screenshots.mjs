@@ -1,5 +1,6 @@
 import puppeteer from "puppeteer-core";
 import { execFile } from "child_process";
+import { existsSync } from "fs";
 import { mkdir } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -13,8 +14,13 @@ const WIDTH = 1280;
 const HEIGHT = 720;
 const GEO = { latitude: 35.5951, longitude: -82.5515 };
 
-const CHROME =
-  "/Users/Mark/.cache/puppeteer/chrome/mac-149.0.7827.22/chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing";
+const CHROME_CANDIDATES = [
+  process.env.CHROME_PATH,
+  "/Users/Mark/.cache/puppeteer/chrome/mac-149.0.7827.22/chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+].filter(Boolean);
+
+const CHROME = CHROME_CANDIDATES.find((candidate) => existsSync(candidate));
 
 const APPS = [
   {
@@ -86,7 +92,7 @@ async function capture(browser, app) {
 
   await page.goto(app.url, { waitUntil: "domcontentloaded", timeout: 60000 });
 
-  if (app.fitCover || app.exportSize) {
+  if (app.fitCover) {
     await page.addStyleTag({
       content:
         ".fit-stage { padding: 0 !important; } .app { padding: 0 !important; }",
@@ -173,6 +179,12 @@ async function capture(browser, app) {
 }
 
 async function main() {
+  if (!CHROME) {
+    throw new Error(
+      "Chrome not found. Set CHROME_PATH or install Chrome for Testing.",
+    );
+  }
+
   const only = process.argv[2];
   const apps = only ? APPS.filter((app) => app.name === only) : APPS;
   if (!apps.length) {
