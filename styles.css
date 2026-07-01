@@ -22,45 +22,56 @@
   --nav-inset-top: max(1rem, env(safe-area-inset-top));
   --nav-btn-size: 2.5rem;
   --nav-title-descender: 0.2em;
+  --starfield-image:
+    radial-gradient(ellipse 82% 52% at 50% -10%, rgba(80, 120, 200, 0.12), transparent 62%),
+    radial-gradient(ellipse 62% 42% at 100% 0%, rgba(120, 80, 200, 0.06), transparent 52%),
+    radial-gradient(ellipse 45% 32% at 10% 88%, rgba(70, 110, 200, 0.075), transparent 68%),
+    radial-gradient(ellipse 38% 24% at 88% 72%, rgba(140, 90, 210, 0.05), transparent 70%),
+    url("images/starfield.svg");
 }
 
 html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: var(--starfield-image);
+  background-size: cover, cover, cover, cover, cover;
+  background-position: center top, center top, center, center, center top;
+  background-repeat: no-repeat;
   min-height: 100%;
   min-height: -webkit-fill-available;
 }
 
 body {
   font-family: var(--font);
-  background: var(--bg);
+  background: transparent;
   color: var(--text);
   line-height: 1.5;
   min-height: 100dvh;
   min-height: 100svh;
   min-height: -webkit-fill-available;
+  overflow-x: hidden;
 }
 
 .starfield {
   position: fixed;
-  top: calc(0px - env(safe-area-inset-top, 0px));
-  right: calc(0px - env(safe-area-inset-right, 0px));
-  bottom: calc(0px - env(safe-area-inset-bottom, 0px));
-  left: calc(0px - env(safe-area-inset-left, 0px));
   z-index: 0;
   pointer-events: none;
+  left: 50%;
+  top: 50%;
+  width: 140vmax;
+  height: 140vmax;
+  min-width: calc(100vw + env(safe-area-inset-left, 0px) + env(safe-area-inset-right, 0px));
+  min-height: calc(100lvh + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
+  transform: translate(-50%, -50%);
   background-color: var(--bg);
-  background-image:
-    radial-gradient(ellipse 82% 52% at 50% -10%, rgba(80, 120, 200, 0.12), transparent 62%),
-    radial-gradient(ellipse 62% 42% at 100% 0%, rgba(120, 80, 200, 0.06), transparent 52%),
-    radial-gradient(ellipse 45% 32% at 10% 88%, rgba(70, 110, 200, 0.075), transparent 68%),
-    radial-gradient(ellipse 38% 24% at 88% 72%, rgba(140, 90, 210, 0.05), transparent 70%),
-    url("images/starfield.svg");
+  background-image: var(--starfield-image);
   background-size: cover, cover, cover, cover, cover;
   background-position: center top, center top, center, center, center top;
   background-repeat: no-repeat;
+  -webkit-transform: translate(-50%, -50%) translateZ(0);
+  will-change: transform;
 }
 
 .site-nav {
