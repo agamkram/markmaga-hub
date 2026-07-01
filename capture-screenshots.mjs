@@ -55,6 +55,7 @@ const APPS = [
     geo: true,
     waitForPressure: true,
     viewport: { width: 720, height: 720 },
+    fitCover: true,
   },
 ];
 
@@ -112,6 +113,24 @@ async function capture(browser, app) {
     await new Promise((r) => setTimeout(r, app.waitMs));
   } else {
     await new Promise((r) => setTimeout(r, app.waitMs));
+  }
+
+  if (app.fitCover) {
+    await page.evaluate(() => {
+      const appEl = document.getElementById("app");
+      const stage = document.getElementById("fit-stage");
+      if (!appEl || !stage) return;
+
+      const availH = stage.clientHeight;
+      const availW = stage.clientWidth;
+      appEl.style.width = `${availW}px`;
+      appEl.style.transform = "translate(-50%, -50%) scale(1)";
+      const naturalH = appEl.offsetHeight;
+      const naturalW = appEl.offsetWidth;
+      const scale = Math.max(availH / naturalH, availW / naturalW);
+      appEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    });
+    await new Promise((r) => setTimeout(r, 200));
   }
 
   const outPath = path.join(OUT_DIR, `${app.name}.png`);
