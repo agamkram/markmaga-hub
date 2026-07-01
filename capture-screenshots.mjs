@@ -54,10 +54,8 @@ const APPS = [
     waitMs: 2000,
     geo: true,
     waitForPressure: true,
-    viewport: { width: 720, height: 720 },
-    fitCover: true,
-    coverBoost: 1.25,
-    exportSize: { width: 720, height: 720 },
+    viewport: { width: 1280, height: 800 },
+    exportSize: { width: 720, height: 720, crop: "top-center" },
   },
 ];
 
@@ -148,12 +146,22 @@ async function capture(browser, app) {
 
   if (app.exportSize) {
     const webpPath = path.join(OUT_DIR, `${app.name}.webp`);
-    const { width, height } = app.exportSize;
+    const { width, height, crop } = app.exportSize;
+    const cropLines =
+      crop === "top-center"
+        ? [
+            "side = min(w, h)",
+            "left = (w - side) // 2",
+            "im = im.crop((left, 0, left + side, side))",
+          ]
+        : [];
     await execFileAsync("python3", [
       "-c",
       [
         "from PIL import Image",
         `im = Image.open(${JSON.stringify(outPath)}).convert('RGB')`,
+        "w, h = im.size",
+        ...cropLines,
         `im = im.resize((${width}, ${height}), Image.Resampling.LANCZOS)`,
         `im.save(${JSON.stringify(webpPath)}, 'WEBP', quality=85)`,
       ].join("\n"),
