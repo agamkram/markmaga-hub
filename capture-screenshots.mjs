@@ -48,7 +48,17 @@ const APPS = [
     geo: false,
     waitForLoaded: true,
   },
-
+  {
+    name: "weight-of-air",
+    url: "http://127.0.0.1:8006/",
+    waitMs: 2000,
+    geo: true,
+    waitForPressure: true,
+    viewport: { width: 720, height: 720 },
+    fitCover: true,
+    coverBoost: 1.25,
+    exportSize: { width: 720, height: 720 },
+  },
 ];
 
 async function waitForServer(url, timeoutMs = 90000) {
@@ -80,7 +90,8 @@ async function capture(browser, app) {
 
   if (app.fitCover || app.exportSize) {
     await page.addStyleTag({
-      content: ".fit-stage { padding: 0 !important; }",
+      content:
+        ".fit-stage { padding: 0 !important; } .app { padding: 0 !important; }",
     });
   }
 
