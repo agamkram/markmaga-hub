@@ -54,8 +54,10 @@ const APPS = [
     waitMs: 2000,
     geo: true,
     waitForPressure: true,
-    viewport: { width: 720, height: 720 },
+    // Phone-width 16:9 — hub square cards zoom landscape previews (same as moon).
+    viewport: { width: 720, height: 405 },
     fitCover: true,
+    exportSize: { width: 2560, height: 1440 },
   },
 ];
 
@@ -86,7 +88,7 @@ async function capture(browser, app) {
 
   await page.goto(app.url, { waitUntil: "domcontentloaded", timeout: 60000 });
 
-  if (app.viewport) {
+  if (app.fitCover || app.exportSize) {
     await page.addStyleTag({
       content: ".fit-stage { padding: 0 !important; }",
     });
@@ -142,14 +144,15 @@ async function capture(browser, app) {
 
   console.log(`Saved ${outPath}`);
 
-  if (app.viewport) {
+  if (app.exportSize) {
     const webpPath = path.join(OUT_DIR, `${app.name}.webp`);
+    const { width, height } = app.exportSize;
     await execFileAsync("python3", [
       "-c",
       [
         "from PIL import Image",
         `im = Image.open(${JSON.stringify(outPath)}).convert('RGB')`,
-        "im = im.resize((720, 720), Image.Resampling.LANCZOS)",
+        `im = im.resize((${width}, ${height}), Image.Resampling.LANCZOS)`,
         `im.save(${JSON.stringify(webpPath)}, 'WEBP', quality=85)`,
       ].join("\n"),
     ]);
