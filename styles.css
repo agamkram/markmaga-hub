@@ -28,6 +28,9 @@ html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  background: var(--bg);
+  min-height: 100%;
+  min-height: -webkit-fill-available;
 }
 
 body {
@@ -36,11 +39,16 @@ body {
   color: var(--text);
   line-height: 1.5;
   min-height: 100dvh;
+  min-height: 100svh;
+  min-height: -webkit-fill-available;
 }
 
 .starfield {
   position: fixed;
-  inset: 0;
+  top: calc(0px - env(safe-area-inset-top, 0px));
+  right: calc(0px - env(safe-area-inset-right, 0px));
+  bottom: calc(0px - env(safe-area-inset-bottom, 0px));
+  left: calc(0px - env(safe-area-inset-left, 0px));
   z-index: 0;
   pointer-events: none;
   background-color: var(--bg);
@@ -51,7 +59,7 @@ body {
     radial-gradient(ellipse 38% 24% at 88% 72%, rgba(140, 90, 210, 0.05), transparent 70%),
     url("images/starfield.svg");
   background-size: cover, cover, cover, cover, cover;
-  background-position: center, center, center, center, center;
+  background-position: center top, center top, center, center, center top;
   background-repeat: no-repeat;
 }
 
