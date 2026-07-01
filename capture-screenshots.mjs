@@ -42,20 +42,20 @@ const APPS = [
     geo: true,
   },
   {
-    name: "us-elevation-map",
+    name: "elevation-app",
     url: "http://127.0.0.1:8004/",
     waitMs: 6000,
     geo: true,
   },
   {
-    name: "orbital-view",
+    name: "satellite-app",
     url: "http://127.0.0.1:3005/",
     waitMs: 3000,
     geo: false,
     waitForLoaded: true,
   },
   {
-    name: "weight-of-air",
+    name: "suction-cup-app",
     url: "http://127.0.0.1:8006/",
     waitMs: 2000,
     geo: true,
