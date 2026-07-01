@@ -48,18 +48,7 @@ const APPS = [
     geo: false,
     waitForLoaded: true,
   },
-  {
-    name: "weight-of-air",
-    url: "http://127.0.0.1:8006/",
-    waitMs: 2000,
-    geo: true,
-    waitForPressure: true,
-    // Match solar / elevation / orbital hub previews (720 square webp).
-    viewport: { width: 720, height: 720 },
-    fitCover: true,
-    coverBoost: 1.08,
-    exportSize: { width: 720, height: 720 },
-  },
+
 ];
 
 async function waitForServer(url, timeoutMs = 90000) {
