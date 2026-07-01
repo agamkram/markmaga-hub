@@ -50,6 +50,7 @@ const APPS = [
     waitMs: 2000,
     geo: true,
     waitForPressure: true,
+    viewport: { width: 720, height: 720 },
   },
 ];
 
@@ -69,7 +70,8 @@ async function waitForServer(url, timeoutMs = 90000) {
 
 async function capture(browser, app) {
   const page = await browser.newPage();
-  await page.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 2 });
+  const viewport = app.viewport ?? { width: WIDTH, height: HEIGHT };
+  await page.setViewport({ ...viewport, deviceScaleFactor: 2 });
 
   if (app.geo) {
     const context = browser.defaultBrowserContext();
@@ -106,7 +108,7 @@ async function capture(browser, app) {
   await page.screenshot({
     path: outPath,
     type: "png",
-    clip: { x: 0, y: 0, width: WIDTH, height: HEIGHT },
+    clip: { x: 0, y: 0, width: viewport.width, height: viewport.height },
   });
 
   console.log(`Saved ${outPath}`);
