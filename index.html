@@ -215,6 +215,22 @@
 
   <script>
     (function () {
+      const LOCAL_PORTS = {
+        "moon-phase-app": 8001,
+        "solar-light-app": 8003,
+        "moon-phase-beta": 8002,
+        "orbital-view": 3005,
+        "weight-of-air": 8006,
+        "us-elevation-map": 8004,
+      };
+      const host = location.hostname;
+      if (host === "localhost" || host === "127.0.0.1") {
+        document.querySelectorAll("a.card[data-app]").forEach((link) => {
+          const port = LOCAL_PORTS[link.dataset.app];
+          if (port) link.href = `http://127.0.0.1:${port}/`;
+        });
+      }
+
       const menuBtn = document.getElementById("menu-btn");
       const siteMenu = document.getElementById("site-menu");
       const aboutBtn = document.getElementById("about-btn");
