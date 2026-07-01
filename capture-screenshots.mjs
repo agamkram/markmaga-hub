@@ -1,7 +1,11 @@
 import puppeteer from "puppeteer-core";
+import { execFile } from "child_process";
 import { mkdir } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import { promisify } from "util";
+
+const execFileAsync = promisify(execFile);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.join(__dirname, "images");
@@ -81,6 +85,12 @@ async function capture(browser, app) {
 
   await page.goto(app.url, { waitUntil: "domcontentloaded", timeout: 60000 });
 
+  if (app.viewport) {
+    await page.addStyleTag({
+      content: ".fit-stage { padding: 0 !important; }",
+    });
+  }
+
   if (app.waitForLoaded) {
     await page.waitForFunction(
       () => !document.body.innerText.includes("Loading satellite catalog"),
@@ -112,6 +122,21 @@ async function capture(browser, app) {
   });
 
   console.log(`Saved ${outPath}`);
+
+  if (app.viewport) {
+    const webpPath = path.join(OUT_DIR, `${app.name}.webp`);
+    await execFileAsync("python3", [
+      "-c",
+      [
+        "from PIL import Image",
+        `im = Image.open(${JSON.stringify(outPath)}).convert('RGB')`,
+        "im = im.resize((720, 720), Image.Resampling.LANCZOS)",
+        `im.save(${JSON.stringify(webpPath)}, 'WEBP', quality=85)`,
+      ].join("\n"),
+    ]);
+    console.log(`Saved ${webpPath}`);
+  }
+
   await page.close();
 }
 
