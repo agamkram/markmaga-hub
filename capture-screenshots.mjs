@@ -49,34 +49,14 @@ const APPS = [
   },
   {
     name: "satellite-app",
-    url: "http://127.0.0.1:3005/",
-    waitMs: 3000,
+    url: "http://127.0.0.1:3005/?card",
+    waitMs: 2000,
     geo: false,
     waitForLoaded: true,
-    loadTimeoutMs: 180000,
-    prewarm: [
-      "starlink",
-      "stations",
-      "gps",
-      "oneweb",
-      "iridium",
-      "kuiper",
-      "galileo",
-      "glo",
-      "beidou",
-    ],
+    loadTimeoutMs: 60000,
+    prewarm: ["stations", "gps", "galileo"],
     viewport: { width: 1280, height: 800 },
-    exportSize: { width: 720, height: 720, crop: "top-center" },
-    beforeScreenshot: async (page) => {
-      await page.addStyleTag({
-        content: `
-          #ov-constellation-btn, #ov-constellation-panel, #ov-time-dock, .time-controls-gradient { display: none !important; }
-          .absolute.inset-0 { overflow: hidden !important; }
-          .absolute.inset-0 canvas { transform: scale(3.6) !important; transform-origin: 50% 44% !important; }
-        `,
-      });
-      await new Promise((r) => setTimeout(r, 400));
-    },
+    exportSize: { width: 720, height: 720, crop: "center" },
   },
   {
     name: "suction-cup-app",
@@ -198,7 +178,14 @@ async function capture(browser, app) {
             "left = (w - side) // 2",
             "im = im.crop((left, 0, left + side, side))",
           ]
-        : [];
+        : crop === "center"
+          ? [
+              "side = min(w, h)",
+              "left = (w - side) // 2",
+              "top = (h - side) // 2",
+              "im = im.crop((left, top, left + side, top + side))",
+            ]
+          : [];
     await execFileAsync("python3", [
       "-c",
       [
