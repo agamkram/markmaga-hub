@@ -50,10 +50,10 @@ const APPS = [
   {
     name: "satellite-app",
     url: "http://127.0.0.1:3005/?card",
-    waitMs: 2000,
+    waitMs: 3000,
     geo: false,
     waitForLoaded: true,
-    loadTimeoutMs: 60000,
+    loadTimeoutMs: 120000,
     prewarm: ["stations", "gps", "galileo"],
     viewport: { width: 1280, height: 800 },
     exportSize: { width: 720, height: 720, crop: "center" },
