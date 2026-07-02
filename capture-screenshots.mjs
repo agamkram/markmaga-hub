@@ -53,6 +53,30 @@ const APPS = [
     waitMs: 3000,
     geo: false,
     waitForLoaded: true,
+    loadTimeoutMs: 180000,
+    prewarm: [
+      "starlink",
+      "stations",
+      "gps",
+      "oneweb",
+      "iridium",
+      "kuiper",
+      "galileo",
+      "glo",
+      "beidou",
+    ],
+    viewport: { width: 1280, height: 800 },
+    exportSize: { width: 720, height: 720, crop: "top-center" },
+    beforeScreenshot: async (page) => {
+      await page.addStyleTag({
+        content: `
+          #ov-constellation-btn, #ov-constellation-panel, #ov-time-dock, .time-controls-gradient { display: none !important; }
+          .absolute.inset-0 { overflow: hidden !important; }
+          .absolute.inset-0 canvas { transform: scale(3.6) !important; transform-origin: 50% 44% !important; }
+        `,
+      });
+      await new Promise((r) => setTimeout(r, 400));
+    },
   },
   {
     name: "suction-cup-app",
@@ -109,8 +133,10 @@ async function capture(browser, app) {
 
   if (app.waitForLoaded) {
     await page.waitForFunction(
-      () => !document.body.innerText.includes("Loading satellite catalog"),
-      { timeout: 120000 },
+      () =>
+        document.querySelector("canvas") &&
+        !document.body.innerText.includes("Loading satellite catalog"),
+      { timeout: app.loadTimeoutMs ?? 120000 },
     );
     await new Promise((r) => setTimeout(r, 4000));
   } else if (app.waitForPressure) {
@@ -128,6 +154,10 @@ async function capture(browser, app) {
     await new Promise((r) => setTimeout(r, app.waitMs));
   } else {
     await new Promise((r) => setTimeout(r, app.waitMs));
+  }
+
+  if (app.beforeScreenshot) {
+    await app.beforeScreenshot(page);
   }
 
   if (app.fitCover) {
@@ -205,6 +235,16 @@ async function main() {
   for (const app of apps) {
     await waitForServer(app.url);
     console.log(`  ready: ${app.url}`);
+
+    if (app.prewarm?.length) {
+      console.log(`  prewarming ${app.name} APIs...`);
+      for (const group of app.prewarm) {
+        const prewarmUrl = new URL("/api/satellites", app.url);
+        prewarmUrl.searchParams.set("group", group);
+        const res = await fetch(prewarmUrl, { signal: AbortSignal.timeout(180000) });
+        console.log(`    ${group}: ${res.status}`);
+      }
+    }
   }
 
   const browser = await puppeteer.launch({
