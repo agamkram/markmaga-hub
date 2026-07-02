@@ -82,7 +82,7 @@ body::before {
   right: max(1rem, env(safe-area-inset-right));
   z-index: 100;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.5rem;
 }
 
@@ -300,11 +300,7 @@ body::before {
   text-align: center;
 }
 
-@media (min-width: 560px) {
-  .intro {
-    padding-top: calc(var(--nav-btn-size) * 2 + 1rem);
-  }
-}
+
 
 .intro h1 {
   margin-bottom: 0.5rem;
@@ -317,12 +313,6 @@ body::before {
   color: transparent;
   -webkit-text-stroke: 1.1px rgba(232, 236, 242, 0.94);
   paint-order: stroke fill;
-}
-
-@media (max-width: 559px) {
-  .site-actions {
-    flex-direction: row;
-  }
 }
 
 .intro p {
