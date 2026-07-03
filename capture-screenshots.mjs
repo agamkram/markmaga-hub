@@ -75,6 +75,14 @@ const APPS = [
     viewport: { width: 1280, height: 800 },
     exportSize: { width: 720, height: 720, crop: "top-center" },
   },
+  {
+    name: "solar-system-app",
+    url: "http://127.0.0.1:3000/",
+    waitMs: 6000,
+    geo: false,
+    viewport: { width: 1280, height: 800 },
+    exportSize: { width: 720, height: 720, crop: "center" },
+  },
 ];
 
 async function waitForServer(url, timeoutMs = 90000) {
