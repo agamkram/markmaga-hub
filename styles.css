@@ -225,7 +225,7 @@ body::before {
 .about-dialog {
   border: none;
   padding: 0;
-  max-width: 22rem;
+  max-width: 28rem;
   width: calc(100% - 2rem);
   color: var(--text);
   background: transparent;
@@ -254,7 +254,11 @@ body::before {
 .about-dialog__inner p {
   font-size: 0.9rem;
   color: var(--text-muted);
-  line-height: 1.5;
+  line-height: 1.55;
+}
+
+.about-dialog__inner p + p {
+  margin-top: 0.75rem;
 }
 
 .about-dialog__close {
