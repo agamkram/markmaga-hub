@@ -83,6 +83,14 @@ const APPS = [
     viewport: { width: 1280, height: 800 },
     exportSize: { width: 720, height: 720, crop: "center" },
   },
+  {
+    name: "lifespan-app",
+    url: "http://127.0.0.1:8007/",
+    waitMs: 1500,
+    geo: false,
+    viewport: { width: 1280, height: 800 },
+    exportSize: { width: 720, height: 720, crop: "top-center" },
+  },
 ];
 
 async function waitForServer(url, timeoutMs = 90000) {
