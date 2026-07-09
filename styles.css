@@ -370,6 +370,11 @@ body::before {
   color: var(--text-muted);
 }
 
+.card-hint .hint-white {
+  color: #fff;
+  font-weight: inherit;
+}
+
 @media (min-width: 560px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
