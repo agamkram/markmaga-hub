@@ -110,12 +110,14 @@ body::before {
   height: 100%;
 }
 
-.cashapp-link {
+.cashapp-link,
+.venmo-link {
   padding: 0;
   overflow: hidden;
 }
 
-.cashapp-link__icon {
+.cashapp-link__icon,
+.venmo-link__icon {
   display: block;
   width: 100%;
   height: 100%;
