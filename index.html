@@ -15,7 +15,7 @@
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Michroma&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css?v=6" />
+  <link rel="stylesheet" href="styles.css?v=7" />
 </head>
 <body>
   <nav class="site-nav" aria-label="Site">
@@ -33,6 +33,7 @@
     </button>
     <div class="menu-dropdown" id="site-menu" hidden>
       <button type="button" class="menu-item" id="about-btn">About</button>
+      <button type="button" class="menu-item" id="tips-btn">Tips</button>
       <a class="menu-item" href="mailto:markmagadotcom@gmail.com">Contact</a>
       <a
         class="menu-item"
@@ -58,38 +59,6 @@
         />
       </svg>
     </a>
-    <a
-      class="corner-link venmo-link"
-      href="https://venmo.com/u/Mark-Maga"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Tip Mark Maga on Venmo"
-    >
-      <img
-        class="corner-link__icon venmo-link__icon"
-        src="images/venmo.svg"
-        alt=""
-        width="64"
-        height="64"
-        decoding="async"
-      />
-    </a>
-    <a
-      class="corner-link cashapp-link"
-      href="https://cash.app/$markemaga"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Tip Mark Maga on Cash App"
-    >
-      <img
-        class="corner-link__icon cashapp-link__icon"
-        src="images/cash-app.svg"
-        alt=""
-        width="64"
-        height="64"
-        decoding="async"
-      />
-    </a>
   </div>
 
   <dialog id="about-dialog" class="about-dialog" aria-labelledby="about-dialog-title">
@@ -99,6 +68,40 @@
       <p>This is not something I’ve ever done, the closest I’ve come to making a web page was with Weebly. It seems now that just about anyone can make, store, and serve an app to anyone in the Universe for the cost of an LLM subscription, an old laptop and $10 for the domain. I followed the Grok Build->Github->Vercel->Namecheap path- pretty easy, and that’s the magic!</p>
       <p>You can just do things!</p>
       <button type="button" class="about-dialog__close" id="about-close">Close</button>
+    </div>
+  </dialog>
+
+  <dialog id="tips-dialog" class="about-dialog tips-dialog" aria-labelledby="tips-dialog-title">
+    <div class="about-dialog__inner">
+      <h2 id="tips-dialog-title">Tips</h2>
+      <p>If something here made you smile, you can tip anytime.</p>
+      <div class="tips-links">
+        <a
+          class="tips-link"
+          href="https://cash.app/$markemaga"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src="images/cash-app.svg" alt="" width="40" height="40" decoding="async" />
+          <span class="tips-link__text">
+            <span class="tips-link__name">Cash App</span>
+            <span class="tips-link__handle">$markemaga</span>
+          </span>
+        </a>
+        <a
+          class="tips-link"
+          href="https://venmo.com/u/Mark-Maga"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src="images/venmo.svg" alt="" width="40" height="40" decoding="async" />
+          <span class="tips-link__text">
+            <span class="tips-link__name">Venmo</span>
+            <span class="tips-link__handle">@Mark-Maga</span>
+          </span>
+        </a>
+      </div>
+      <button type="button" class="about-dialog__close" id="tips-close">Close</button>
     </div>
   </dialog>
 
@@ -340,6 +343,9 @@
       const aboutBtn = document.getElementById("about-btn");
       const aboutDialog = document.getElementById("about-dialog");
       const aboutClose = document.getElementById("about-close");
+      const tipsBtn = document.getElementById("tips-btn");
+      const tipsDialog = document.getElementById("tips-dialog");
+      const tipsClose = document.getElementById("tips-close");
 
       function closeMenu() {
         siteMenu.hidden = true;
@@ -358,21 +364,24 @@
         else closeMenu();
       }
 
+      function wireDialog(dialog, openBtn, closeBtn) {
+        openBtn?.addEventListener("click", () => {
+          closeMenu();
+          dialog.showModal();
+        });
+        closeBtn?.addEventListener("click", () => dialog.close());
+        dialog?.addEventListener("click", (event) => {
+          if (event.target === dialog) dialog.close();
+        });
+      }
+
       menuBtn.addEventListener("click", (event) => {
         event.stopPropagation();
         toggleMenu();
       });
 
-      aboutBtn.addEventListener("click", () => {
-        closeMenu();
-        aboutDialog.showModal();
-      });
-
-      aboutClose.addEventListener("click", () => aboutDialog.close());
-
-      aboutDialog.addEventListener("click", (event) => {
-        if (event.target === aboutDialog) aboutDialog.close();
-      });
+      wireDialog(aboutDialog, aboutBtn, aboutClose);
+      wireDialog(tipsDialog, tipsBtn, tipsClose);
 
       document.addEventListener("click", (event) => {
         if (siteMenu.hidden) return;
