@@ -15,51 +15,53 @@
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Michroma&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css?v=7" />
+  <link rel="stylesheet" href="styles.css?v=8" />
 </head>
 <body>
-  <nav class="site-nav" aria-label="Site">
-    <button
-      type="button"
-      class="menu-btn"
-      id="menu-btn"
-      aria-expanded="false"
-      aria-controls="site-menu"
-      aria-label="Open menu"
-    >
-      <span class="menu-btn__bar" aria-hidden="true"></span>
-      <span class="menu-btn__bar" aria-hidden="true"></span>
-      <span class="menu-btn__bar" aria-hidden="true"></span>
-    </button>
-    <div class="menu-dropdown" id="site-menu" hidden>
-      <button type="button" class="menu-item" id="about-btn">About</button>
-      <button type="button" class="menu-item" id="tips-btn">Tips</button>
-      <a class="menu-item" href="mailto:markmagadotcom@gmail.com">Contact</a>
+  <header class="site-chrome">
+    <nav class="site-nav" aria-label="Site">
+      <button
+        type="button"
+        class="menu-btn"
+        id="menu-btn"
+        aria-expanded="false"
+        aria-controls="site-menu"
+        aria-label="Open menu"
+      >
+        <span class="menu-btn__bar" aria-hidden="true"></span>
+        <span class="menu-btn__bar" aria-hidden="true"></span>
+        <span class="menu-btn__bar" aria-hidden="true"></span>
+      </button>
+      <div class="menu-dropdown" id="site-menu" hidden>
+        <button type="button" class="menu-item" id="about-btn">About</button>
+        <button type="button" class="menu-item" id="tips-btn">Tips</button>
+        <a class="menu-item" href="mailto:markmagadotcom@gmail.com">Contact</a>
+        <a
+          class="menu-item"
+          href="https://x.com/markemaga/status/2011896466823102834?s=20"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Mouse</a>
+      </div>
+    </nav>
+
+    <div class="site-actions">
       <a
-        class="menu-item"
-        href="https://x.com/markemaga/status/2011896466823102834?s=20"
+        class="corner-link x-link"
+        href="https://x.com/markemaga"
         target="_blank"
         rel="noopener noreferrer"
-      >Mouse</a>
+        aria-label="Mark Maga on X"
+      >
+        <svg class="corner-link__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.138 17.5h2.036L6.324 4.126H4.298z"
+          />
+        </svg>
+      </a>
     </div>
-  </nav>
-
-  <div class="site-actions">
-    <a
-      class="corner-link x-link"
-      href="https://x.com/markemaga"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Mark Maga on X"
-    >
-      <svg class="corner-link__icon" viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          fill="currentColor"
-          d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.138 17.5h2.036L6.324 4.126H4.298z"
-        />
-      </svg>
-    </a>
-  </div>
+  </header>
 
   <dialog id="about-dialog" class="about-dialog" aria-labelledby="about-dialog-title">
     <div class="about-dialog__inner">
