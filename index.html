@@ -120,6 +120,26 @@
     <main>
       <ul class="grid">
         <li class="grid-item">
+          <a class="card" href="https://hypermiler.markmaga.com" data-app="hypermiler-app" aria-label="HyperMiler">
+            <span class="card-media">
+              <img
+                src="images/hypermiler-app.webp?v=1"
+                alt=""
+                width="720"
+                height="720"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+              />
+              <span class="card-overlay" aria-hidden="true">
+                <span class="card-cta">Open app</span>
+              </span>
+            </span>
+          </a>
+          <p class="card-hint">Live accel, brake, corner, bump g · Smooth score · GPS speed · drive smooth, win big</p>
+        </li>
+
+        <li class="grid-item">
           <a class="card" href="https://audioslice.markmaga.com" data-app="audioslice-app" aria-label="AudioSlice">
             <span class="card-media">
               <img
@@ -331,6 +351,7 @@
         "solar-system-app": 3000,
         "lifespan-app": 8007,
         "audioslice-app": 8008,
+        "hypermiler-app": 8009,
       };
       const host = location.hostname;
       if (host === "localhost" || host === "127.0.0.1") {
