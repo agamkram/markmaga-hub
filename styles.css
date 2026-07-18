@@ -510,6 +510,15 @@ body::before {
   transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Full phone UI preview (letterboxed) — e.g. Solar Dashboard */
+.card--full-ui .card-media {
+  background: #0a0c10;
+}
+.card--full-ui .card-media img {
+  object-fit: contain;
+  object-position: center center;
+}
+
 .card:hover .card-media img,
 .card:focus-visible .card-media img {
   transform: scale(1.03);
