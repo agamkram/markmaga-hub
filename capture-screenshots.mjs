@@ -30,12 +30,6 @@ const APPS = [
     geo: false,
   },
   {
-    name: "moon-phase-beta",
-    url: "http://127.0.0.1:8002/",
-    waitMs: 2500,
-    geo: false,
-  },
-  {
     name: "solar-light-app",
     url: "http://127.0.0.1:8003/",
     waitMs: 4000,
