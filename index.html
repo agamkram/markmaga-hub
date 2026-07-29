@@ -120,6 +120,26 @@
     <main>
       <ul class="grid">
         <li class="grid-item">
+          <a class="card" href="https://spacexplore.markmaga.com" data-app="spacexplor-app" aria-label="SpaceXplore">
+            <span class="card-media">
+              <img
+                src="images/spacexplor-app.webp?v=8"
+                alt=""
+                width="720"
+                height="720"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+              />
+              <span class="card-overlay" aria-hidden="true">
+                <span class="card-cta">Open app</span>
+              </span>
+            </span>
+          </a>
+          <p class="card-hint">Live next flight · Falcon & Starship · sites map · cadence · On X</p>
+        </li>
+
+        <li class="grid-item">
           <a class="card" href="https://supermoon.markmaga.com" data-app="supermoon-app" aria-label="SuperMoon">
             <span class="card-media">
               <img
@@ -394,6 +414,7 @@
         "hypermiler-app": 8009,
         "lightslice-app": 8010,
         "solardashboard-app": 8890,
+        "spacexplor-app": 8843,
       };
       const host = location.hostname;
       if (host === "localhost" || host === "127.0.0.1") {
