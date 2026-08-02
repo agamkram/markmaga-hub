@@ -29,7 +29,7 @@
     href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Michroma&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css?v=8" />
+  <link rel="stylesheet" href="styles.css?v=11" />
 </head>
 <body>
   <header class="site-chrome">
@@ -133,6 +133,26 @@
 
     <main>
       <ul class="grid">
+        <li class="grid-item">
+          <a class="card" href="https://faucispies.markmaga.com" data-app="faucipies-app" aria-label="FauciPies">
+            <span class="card-media">
+              <img
+                src="images/faucipies-card.webp?v=5"
+                alt=""
+                width="720"
+                height="720"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+              />
+              <span class="card-overlay" aria-hidden="true">
+                <span class="card-cta">Open app</span>
+              </span>
+            </span>
+          </a>
+          <p class="card-hint">Pick a pie · wind up · let fly · cream splat reveals the story</p>
+        </li>
+
         <li class="grid-item">
           <a class="card" href="https://supermars.markmaga.com" data-app="supermars-app" aria-label="SuperMars">
             <span class="card-media">
@@ -451,12 +471,20 @@
         "spacexplor-app": 8843,
         "supermars-app": 8846,
         "supermoon-app": 8847,
+        "faucipies-app": 8851,
       };
       const host = location.hostname;
-      if (host === "localhost" || host === "127.0.0.1") {
+      const isLocal =
+        host === "localhost" ||
+        host === "127.0.0.1" ||
+        /^192\.168\.\d+\.\d+$/.test(host) ||
+        /^10\.\d+\.\d+\.\d+$/.test(host) ||
+        /^172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+$/.test(host);
+      if (isLocal) {
+        const appHost = host === "localhost" ? "127.0.0.1" : host;
         document.querySelectorAll("a.card[data-app]").forEach((link) => {
           const port = LOCAL_PORTS[link.dataset.app];
-          if (port) link.href = `http://127.0.0.1:${port}/`;
+          if (port) link.href = `http://${appHost}:${port}/`;
         });
       }
 
