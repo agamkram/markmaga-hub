@@ -4,3 +4,7 @@ node_modules/
 .vercel
 images/*.png
 brand/*-pixelpeek.png
+# Local HTTPS preview (serve-https.py) — never commit
+.local-cert.pem
+.local-key.pem
+*.pem
