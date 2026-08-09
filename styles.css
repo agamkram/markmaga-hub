@@ -463,8 +463,8 @@ body::before {
 @media (min-width: 720px) {
   .grid {
     grid-template-columns: repeat(3, 1fr);
-    /* Row gap first, then column gap between cards in a row */
-    gap: 2.5rem 1.85rem;
+    /* Equal row/column gap (smaller of former row values: 2.35rem) */
+    gap: 2.35rem;
     max-width: none;
     margin: 0;
   }
@@ -482,7 +482,7 @@ body::before {
   }
 
   .grid {
-    gap: 2.35rem 2rem;
+    gap: 2.35rem;
   }
 
   .grid-item {
