@@ -1,7 +1,6 @@
 import { APPS } from "./apps.js";
 
 const MODE_KEY = "markmaga-hub-mode";
-const SPHERE_MOD = "./sphere.js";
 
 const gridEl = document.getElementById("app-grid");
 const gridPage = document.getElementById("grid-page");
@@ -85,13 +84,13 @@ function setMode(next) {
 
 async function goSphere() {
   setMode("sphere");
-  const mod = await import(SPHERE_MOD);
+  const mod = await import("./sphere.js");
   await mod.enterSphere();
 }
 
 async function goGrid() {
   try {
-    const mod = await import(SPHERE_MOD);
+    const mod = await import("./sphere.js");
     mod.leaveSphere();
   } catch (_) {}
   setMode("grid");
@@ -119,18 +118,13 @@ function isBackForwardNav() {
   return false;
 }
 
-/*
- * Phone Safari: swipe from the right edge = Forward in history.
- * After Hub → App → Back, Forward still points at that app — so an edge
- * drag “opens” Fauci/CalamityVille/etc. pushState drops the forward stack.
- */
+/* Drop Safari’s forward entry so a right-edge swipe doesn’t reopen the last app. */
 function burnForwardHistory() {
   try {
     history.pushState({ markmagaHub: 1 }, "", location.href);
   } catch (_) {}
 }
 
-/* Back from an app — restore sphere + kill Safari forward-to-last-app */
 window.addEventListener("pageshow", function (e) {
   if (e.persisted || isBackForwardNav()) burnForwardHistory();
   if (readSavedMode() === "sphere" && mode !== "sphere") goSphere();

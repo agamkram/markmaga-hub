@@ -1,11 +1,6 @@
 /**
- * WebGL app sphere (Three.js) — same path on Mac / iPad / phone.
- *
- * Viewer at center. Yaw spins the shell (equator stays horizontal).
- * Pitch tilts the camera up/down to other rings — no sphere tumble/roll.
- * 5 rings: 16 equator + inner/outer ghost bands (14 / 9 by cos packing).
- * Focus zoom on EVERY seat: scale ∝ angular distance from look direction
- * (same L–R weight curve as the old Mac CSS path).
+ * WebGL app sphere — yaw spins the shell, pitch tilts the camera.
+ * 16 live equator cards + ghost latitude bands. Focus scale follows look aim.
  */
 import * as THREE from "./vendor/three.module.min.js";
 import { APPS } from "./apps.js";
@@ -13,27 +8,27 @@ import { APPS } from "./apps.js";
 const REAL = 16;
 const EQUATOR_SLOT_DEG = 360 / REAL;
 const CARD_ASPECT = 1855 / 900;
-/** Peak scale = 1 + FOCUS_BOOST when fully centered */
 const FOCUS_BOOST = 1.5;
-/* Touch only — Mac stays 1:1 with input for snappy focus */
 const FOCUS_LERP_TOUCH = 0.22;
+const OPEN_AIM_MIN = 0.55;
+const OUTSIDE_FACTOR = 1.02;
 const INNER_N = 14;
 const OUTER_N = 9;
 const LAT_INNER_DEG = (Math.acos(INNER_N / REAL) * 180) / Math.PI;
 const LAT_OUTER_DEG = (Math.acos(OUTER_N / REAL) * 180) / Math.PI;
-/* Look up/down far enough for outer rings; equator stays horizontal */
 const PITCH_MAX = LAT_OUTER_DEG + 18;
-/*
- * Card GPU texture width — match ss-*.webp (900px) 1:1.
- * 16 live + 1 shared ghost is still light on phone / pad / Mac.
- */
+const POSE_KEY = "markmaga-hub-sphere-pose";
+
 const TEX_W = 900;
-/* Full card: padding + screenshot (phone aspect) + hint band */
 const TEX_PAD = Math.round(TEX_W * 0.045);
 const TEX_HINT = Math.round(TEX_W * 0.14);
 const TEX_MEDIA_W = TEX_W - TEX_PAD * 2;
 const TEX_MEDIA_H = Math.round(TEX_MEDIA_W * CARD_ASPECT);
 const TEX_H = TEX_PAD + TEX_MEDIA_H + TEX_HINT + TEX_PAD;
+
+const STROKE_IDLE = "rgba(255,255,255,0.5)";
+const STROKE_LIT = "rgba(80, 220, 140, 0.98)";
+const STROKE_GHOST = "rgba(255,255,255,0.28)";
 
 const viewport = document.getElementById("sphere-viewport");
 if (!viewport) throw new Error("missing #sphere-viewport");
@@ -45,7 +40,6 @@ const hasTouch = "ontouchstart" in window || (navigator.maxTouchPoints || 0) > 0
 const finePointer =
   typeof window.matchMedia === "function" &&
   window.matchMedia("(pointer: fine)").matches;
-/* Smooth focus ramp only when there’s no fine pointer (phone / pad) */
 const smoothFocus = !finePointer;
 
 function wrap180(deg) {
@@ -86,7 +80,7 @@ function wrapHint(ctx, text, maxWidth) {
 }
 
 function paintCard(ctx, opts) {
-  const { img, hint, ghost } = opts;
+  const { img, hint, ghost, lit } = opts;
   const pad = TEX_PAD;
   const radius = Math.round(TEX_W * 0.055);
   ctx.clearRect(0, 0, TEX_W, TEX_H);
@@ -94,8 +88,16 @@ function paintCard(ctx, opts) {
   roundRect(ctx, 1, 1, TEX_W - 2, TEX_H - 2, radius);
   ctx.fillStyle = ghost ? "rgba(16, 22, 34, 0.28)" : "rgba(6, 8, 13, 0.94)";
   ctx.fill();
-  ctx.strokeStyle = ghost ? "rgba(255,255,255,0.28)" : "rgba(255,255,255,0.5)";
-  ctx.lineWidth = 2;
+  if (ghost) {
+    ctx.strokeStyle = STROKE_GHOST;
+    ctx.lineWidth = 2;
+  } else if (lit) {
+    ctx.strokeStyle = STROKE_LIT;
+    ctx.lineWidth = 3;
+  } else {
+    ctx.strokeStyle = STROKE_IDLE;
+    ctx.lineWidth = 2;
+  }
   ctx.stroke();
 
   const mediaW = TEX_MEDIA_W;
@@ -107,10 +109,8 @@ function paintCard(ctx, opts) {
   ctx.save();
   ctx.clip();
   if (img) {
-    /* Media box matches screenshot aspect — full width/height, no L/R crop */
     ctx.drawImage(img, mx, my, mediaW, mediaH);
   } else if (ghost) {
-    /* ~10% fill — starfield reads through */
     ctx.fillStyle = "rgba(80, 100, 130, 0.10)";
     ctx.fillRect(mx, my, mediaW, mediaH);
   } else {
@@ -160,7 +160,23 @@ function makeTexture(paintFn) {
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 4;
   tex.needsUpdate = true;
+  tex.userData.canvas = canvas;
+  tex.userData.ctx = ctx;
   return tex;
+}
+
+function setCardTapLit(seat, lit) {
+  if (!seat.live || seat.tapLit === lit) return;
+  seat.tapLit = lit;
+  const map = seat.mesh.material.map;
+  if (!map || !map.userData.ctx) return;
+  paintCard(map.userData.ctx, {
+    img: seat.cardImg,
+    hint: seat.cardHint,
+    ghost: false,
+    lit: lit,
+  });
+  map.needsUpdate = true;
 }
 
 /* —— Scene —— */
@@ -196,7 +212,6 @@ renderer.domElement.addEventListener(
 renderer.domElement.addEventListener(
   "webglcontextrestored",
   function () {
-    /* Context restore after rotate — relayout without network refetch */
     if (seats.length) relayoutSeats();
     else buildSphere().catch(function () {});
   },
@@ -204,6 +219,7 @@ renderer.domElement.addEventListener(
 );
 
 const seats = [];
+const liveMeshes = [];
 let radius = 10;
 let cardW = 1;
 let cardH = 2;
@@ -222,14 +238,14 @@ let downY = 0;
 let lastT = 0;
 let activeId = null;
 let coasting = false;
-/* Recent drag samples for flick coast (last ~100ms only — not whole gesture) */
 const flickSamples = [];
 let pullMax = 2.8;
-/** 0 = viewer at center; grows as user pinches out past the shell */
 let camDist = 0;
 const _lookDir = new THREE.Vector3();
 const _worldPos = new THREE.Vector3();
 const _outTarget = new THREE.Vector3();
+const raycaster = new THREE.Raycaster();
+const pointerNDC = new THREE.Vector2();
 
 function maxCamDist() {
   return radius * 2.75;
@@ -239,23 +255,27 @@ function clampCamDist(d) {
   return Math.max(0, Math.min(maxCamDist(), d));
 }
 
-function focusWeight(lon, lat) {
-  /* Shell yaw + camera pitch: lookLon = yaw, lookLat = pitch (north = +) */
-  const lookLon = yaw;
-  const lookLat = pitch;
-  const dLon = Math.abs(wrap180(lon - lookLon));
-  const dLat = Math.abs(wrap180(lat - lookLat));
-  /*
-   * Elliptical focus (not a tiny circular cone):
-   * halfLon — equator seat width (slightly wide so staggered ghost seats still catch)
-   * halfLat — ~½ ring spacing so bands hand off instead of a dead zone
-   */
-  const halfLon = EQUATOR_SLOT_DEG * 0.75;
-  const halfLat = LAT_INNER_DEG * 0.62;
-  const nx = dLon / halfLon;
-  const ny = dLat / halfLat;
+function isOutside() {
+  return camDist > radius * OUTSIDE_FACTOR;
+}
+
+/** Elliptical weight in seat-sized lon/lat units; 1 at aim, 0 outside the ellipse. */
+function aimWeight(lon, lat, aimLon, aimLat) {
+  const dLon = Math.abs(wrap180(lon - aimLon));
+  const dLat = Math.abs(wrap180(lat - aimLat));
+  const nx = dLon / (EQUATOR_SLOT_DEG * 0.75);
+  const ny = dLat / (LAT_INNER_DEG * 0.62);
   const d = Math.hypot(nx, ny);
   return d >= 1 ? 0 : 1 - d;
+}
+
+function focusWeight(lon, lat) {
+  return aimWeight(lon, lat, yaw, pitch);
+}
+
+function openAimWeight(lon, lat) {
+  if (isOutside()) return aimWeight(lon, lat, wrap180(yaw + 180), -pitch);
+  return aimWeight(lon, lat, yaw, pitch);
 }
 
 function placeSeat(pivot, lonDeg, latDeg, r, faceOutward) {
@@ -264,12 +284,10 @@ function placeSeat(pivot, lonDeg, latDeg, r, faceOutward) {
   const cl = Math.cos(lat);
   pivot.position.set(Math.sin(lon) * cl * r, Math.sin(lat) * r, -Math.cos(lon) * cl * r);
   if (faceOutward) {
-    /* Front faces away from center — correct when viewed from outside */
     _outTarget.copy(pivot.position).multiplyScalar(2);
     shell.localToWorld(_outTarget);
     pivot.lookAt(_outTarget);
   } else {
-    /* Front faces center — correct from inside / far-side see-through */
     pivot.lookAt(0, 0, 0);
   }
 }
@@ -283,13 +301,11 @@ function addSeat(lonDeg, latDeg, texture, meta) {
     side: THREE.FrontSide,
   });
   const mesh = new THREE.Mesh(geo, mat);
-  mesh.userData = meta;
-  /* Pivot holds pose; mesh scale stays uniform (avoids lookAt + scale skew) */
   const pivot = new THREE.Group();
   pivot.add(mesh);
   placeSeat(pivot, lonDeg, latDeg, radius, false);
   shell.add(pivot);
-  seats.push({
+  const seat = {
     pivot: pivot,
     mesh: mesh,
     lon: lonDeg,
@@ -297,9 +313,15 @@ function addSeat(lonDeg, latDeg, texture, meta) {
     baseR: radius,
     lastScale: -1,
     dispW: 0,
+    tapLit: false,
+    cardImg: meta.cardImg || null,
+    cardHint: meta.cardHint || "",
     live: !!meta.live,
     href: meta.href || null,
-  });
+  };
+  mesh.userData.seat = seat;
+  seats.push(seat);
+  if (seat.live && seat.href) liveMeshes.push(mesh);
   return mesh;
 }
 
@@ -316,13 +338,12 @@ function clearSeats() {
     map.dispose();
   });
   seats.length = 0;
+  liveMeshes.length = 0;
 }
 
 function layoutMetrics() {
-  /* World units: packing drives card size; R grows until latitude bands clear */
   radius = 10;
   const seat = (2 * Math.PI) / REAL;
-  /* Seat fill — large enough to read, clear of title / Grok line */
   const FILL = 0.45;
   cardW = 2 * radius * Math.tan((seat * FILL) / 2);
   cardH = cardW * (TEX_H / TEX_W);
@@ -360,10 +381,7 @@ function resize() {
   viewport.style.left = "";
   viewport.style.right = "";
 
-  /*
-   * Full-bleed canvas. Optical center under title/sub (tuned 0.42 — not
-   * too low). Peak scale stays at FOCUS_BOOST (was already the right size).
-   */
+  /* Optical center sits under chrome (~0.42 of title block height). */
   const topReserve = chromeTopPx();
   const shiftY = Math.max(0, topReserve * 0.42);
 
@@ -374,17 +392,9 @@ function resize() {
 }
 
 function updateFocus() {
-  /* Ease off focus zoom as you leave the center so the shell reads as a globe */
   const fade =
-    camDist <= 0.001
-      ? 1
-      : Math.max(0, 1 - camDist / (radius * 0.85));
-  /*
-   * Outside the shell: near-hemisphere cards face out, far-hemisphere stay
-   * facing in — so both the close “outside” faces and the distant “inside”
-   * faces read correctly. Cheap (same lookAt we already do per seat).
-   */
-  const outside = camDist > radius * 1.02;
+    camDist <= 0.001 ? 1 : Math.max(0, 1 - camDist / (radius * 0.85));
+  const outside = isOutside();
   const lerp = smoothFocus ? FOCUS_LERP_TOUCH : 1;
   let settling = false;
   shell.updateMatrixWorld(true);
@@ -416,18 +426,16 @@ function updateFocus() {
       s.mesh.scale.setScalar(scale);
     }
     s.mesh.renderOrder = Math.round(w * 1000);
+    if (s.live) {
+      setCardTapLit(s, openAimWeight(s.lon, s.lat) >= OPEN_AIM_MIN);
+    }
   }
   return settling;
 }
 
 function applyPose() {
-  /* Shell: yaw only — equator plane stays world-horizontal */
   shell.rotation.set(0, (yaw * Math.PI) / 180, 0);
   const pr = (pitch * Math.PI) / 180;
-  /*
-   * Look dir matches camera-at-center Rx(pitch): (0, sin p, −cos p).
-   * Pinch-out backs along −look → through the far side → outside the sphere.
-   */
   _lookDir.set(0, Math.sin(pr), -Math.cos(pr));
   if (camDist < 0.02) {
     camera.position.set(0, 0, 0);
@@ -448,15 +456,13 @@ function stopCoast() {
 }
 
 function startCoast() {
-  /* Soft stop stays put; a real horizontal flick keeps spinning (yaw only). */
   const minV = hasTouch ? 0.55 : 0.1;
   if (Math.abs(velYaw) < minV) {
     velYaw = 0;
     velPitch = 0;
     return;
   }
-  const cap = 20;
-  velYaw = Math.max(-cap, Math.min(cap, velYaw));
+  velYaw = Math.max(-20, Math.min(20, velYaw));
   velPitch = 0;
   coasting = true;
   ensureAnimLoop();
@@ -503,11 +509,10 @@ function isChromeTarget(t) {
 }
 
 function dragSigns() {
-  /* Mac: look-steer. Phone/pad: drag-the-world. Flip both when outside so feel matches inside. */
-  const outside = camDist > radius * 1.02;
+  /* Fine pointer: look-steer. Touch: drag-the-world. Flip when outside. */
   let yawSign = hasTouch ? -1 : 1;
   let pitchSign = hasTouch ? 1 : -1;
-  if (outside) {
+  if (isOutside()) {
     yawSign *= -1;
     pitchSign *= -1;
   }
@@ -541,7 +546,6 @@ function onMove(x, y) {
   const dt = Math.max(8, Math.min(48, now - lastT));
   const dx = x - lastX;
   const dy = y - lastY;
-  /* From finger-down (not per-frame) so a slow nudge isn’t a tap */
   if (Math.hypot(x - downX, y - downY) > (hasTouch ? 12 : 6)) {
     moved = true;
     blockClick = true;
@@ -565,10 +569,7 @@ function onMove(x, y) {
 }
 
 function flickReleaseVelocity() {
-  /*
-   * Only the last ~70ms of motion. Using peak speed from earlier in the
-   * drag made a centered card “bounce” away on finger-up.
-   */
+  /* Last ~70ms only — earlier peak speed was bouncing the focused card on lift. */
   let ry = 0;
   if (flickSamples.length >= 2) {
     const end = flickSamples[flickSamples.length - 1];
@@ -587,17 +588,11 @@ function flickReleaseVelocity() {
   return { yaw: ry, pitch: 0 };
 }
 
-const POSE_KEY = "markmaga-hub-sphere-pose";
-
 function saveSpherePose() {
   try {
     sessionStorage.setItem(
       POSE_KEY,
-      JSON.stringify({
-        yaw: yaw,
-        pitch: pitch,
-        camDist: camDist,
-      })
+      JSON.stringify({ yaw: yaw, pitch: pitch, camDist: camDist })
     );
   } catch (_) {}
 }
@@ -613,7 +608,6 @@ function restoreSpherePose() {
     velYaw = 0;
     velPitch = 0;
     stopCoast();
-    /* Reset focus blend so cards match the restored look immediately */
     for (let i = 0; i < seats.length; i++) {
       seats[i].dispW = 0;
       seats[i].lastScale = -1;
@@ -621,30 +615,28 @@ function restoreSpherePose() {
   } catch (_) {}
 }
 
-function openFocusedLive() {
-  /* Same as before momentum work: open the most-centered live card.
-   * Works inside or outside the shell — no raycast / edge dead-zones. */
+function openFocusedLive(clientX, clientY) {
   if (!sphereActive || blockClick || moved) return;
   if (performance.now() < ignoreOpenUntil) return;
-  let best = null;
-  let bestW = 0.55;
-  for (let i = 0; i < seats.length; i++) {
-    const s = seats[i];
-    if (!s.live || !s.href) continue;
-    if (s.dispW > bestW) {
-      bestW = s.dispW;
-      best = s;
-    }
-  }
-  if (best && best.href) {
-    saveSpherePose();
-    location.assign(best.href);
-  }
+  const canvas = renderer.domElement;
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+  pointerNDC.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+  pointerNDC.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(pointerNDC, camera);
+  const hits = raycaster.intersectObjects(liveMeshes, false);
+  if (!hits.length) return;
+  const s = hits[0].object.userData.seat;
+  if (!s || !s.href || openAimWeight(s.lon, s.lat) < OPEN_AIM_MIN) return;
+  saveSpherePose();
+  location.assign(s.href);
 }
 
-function onUp() {
+function onUp(clientX, clientY) {
   if (!dragging) return;
   const shouldOpen = !moved && !blockClick;
+  const upX = clientX != null ? clientX : lastX;
+  const upY = clientY != null ? clientY : lastY;
   const flick = flickReleaseVelocity();
   dragging = false;
   activeId = null;
@@ -653,7 +645,7 @@ function onUp() {
   velYaw = flick.yaw;
   velPitch = flick.pitch;
   startCoast();
-  if (shouldOpen) openFocusedLive();
+  if (shouldOpen) openFocusedLive(upX, upY);
   if (blockClick) {
     setTimeout(function () {
       blockClick = false;
@@ -663,10 +655,7 @@ function onUp() {
 }
 
 function relayoutSeats() {
-  /*
-   * Orientation / window change: update packing + mesh size in place.
-   * Do NOT rebuild textures or re-fetch images (that hung local HTTPS / PWA).
-   */
+  /* Packing + mesh size only — keep textures (avoids refetch on rotate). */
   layoutMetrics();
   for (let i = 0; i < seats.length; i++) {
     const s = seats[i];
@@ -700,7 +689,6 @@ async function buildSphere() {
   addGhostRing(LAT_OUTER_DEG, OUTER_N, false);
   addGhostRing(-LAT_OUTER_DEG, OUTER_N, false);
 
-  /* Live equator last so they win depth ties when focused */
   const images = await Promise.all(
     APPS.map(function (app) {
       return loadImage(app.img).catch(function () {
@@ -713,12 +701,14 @@ async function buildSphere() {
     const app = APPS[i];
     const img = images[i];
     const tex = makeTexture(function (ctx) {
-      paintCard(ctx, { img: img, hint: app.hint, ghost: false });
+      paintCard(ctx, { img: img, hint: app.hint, ghost: false, lit: false });
     });
     addSeat(i * EQUATOR_SLOT_DEG, 0, tex, {
       live: true,
       name: app.name,
       href: app.href,
+      cardImg: img,
+      cardHint: app.hint,
     });
   }
 
@@ -741,7 +731,6 @@ function touchSep(t0, t1) {
 
 function onPinchStart(t0, t1) {
   pinching = true;
-  /* Cancel one-finger drag so pointer + pinch don’t fight */
   if (dragging) {
     dragging = false;
     activeId = null;
@@ -758,12 +747,14 @@ function onPinchStart(t0, t1) {
 function onPinchMove(t0, t1) {
   if (!pinching) return;
   const sep = Math.max(1, touchSep(t0, t1));
-  /* Phone/pad: pinch-in → fly outward; spread → return toward center */
-  if (pinchStartDist < 0.05) {
-    camDist = clampCamDist((pinchStartSep - sep) * 0.05);
-  } else {
-    camDist = clampCamDist(pinchStartDist * (pinchStartSep / sep));
-  }
+  /*
+   * Same multiplicative feel from center or outside. A virtual floor keeps
+   * camDist≈0 (full-size card) from crawling under the old linear branch.
+   */
+  const floor = radius * 0.5;
+  const start = Math.max(pinchStartDist, floor);
+  const ratio = Math.pow(pinchStartSep / Math.max(1, sep), 1.4);
+  camDist = clampCamDist(start * ratio - (start - pinchStartDist));
   render();
 }
 
@@ -771,10 +762,7 @@ function onPinchEnd() {
   pinching = false;
 }
 
-/*
- * Phone/pad: touch drag (high-rate moves) + pinch.
- * Mac: pointer drag. Avoid dual-binding — iOS fires both and would double-spin.
- */
+/* Touch path only on touch devices — dual-binding would double-spin on iOS. */
 if (hasTouch) {
   viewport.addEventListener(
     "touchstart",
@@ -817,7 +805,10 @@ if (hasTouch) {
         }
         return;
       }
-      if (e.touches.length === 0) onUp();
+      if (e.touches.length === 0) {
+        const t = e.changedTouches && e.changedTouches[0];
+        onUp(t ? t.clientX : lastX, t ? t.clientY : lastY);
+      }
     },
     { passive: true }
   );
@@ -825,7 +816,7 @@ if (hasTouch) {
     "touchcancel",
     function () {
       onPinchEnd();
-      onUp();
+      onUp(lastX, lastY);
     },
     { passive: true }
   );
@@ -852,7 +843,7 @@ if (hasTouch) {
   );
   function endPointer(e) {
     if (activeId != null && e.pointerId !== activeId) return;
-    onUp();
+    onUp(e.clientX, e.clientY);
     try {
       viewport.releasePointerCapture(e.pointerId);
     } catch (_) {}
@@ -877,19 +868,18 @@ viewport.addEventListener(
   function (e) {
     e.preventDefault();
     stopCoast();
-    /* Trackpad pinch (ctrl+wheel) or explicit pinch → dolly out/in */
     if (e.ctrlKey || e.metaKey) {
-      camDist = clampCamDist(camDist + e.deltaY * 0.04);
+      /* Scale steps by distance (with a floor) so center isn’t sluggish. */
+      const step = Math.max(camDist, radius * 0.5) * 0.01;
+      camDist = clampCamDist(camDist + e.deltaY * step);
       velYaw = 0;
       velPitch = 0;
       render();
       return;
     }
-    const outside = camDist > radius * 1.02;
-    const yawSign = outside ? -1 : 1;
-    const pitchSign = outside ? -1 : 1;
-    yaw += yawSign * e.deltaX * 0.1;
-    pitch = clampPitch(pitch - pitchSign * e.deltaY * 0.08);
+    const flip = isOutside() ? -1 : 1;
+    yaw += flip * e.deltaX * 0.1;
+    pitch = clampPitch(pitch - flip * e.deltaY * 0.08);
     velYaw = 0;
     velPitch = 0;
     render();
@@ -899,7 +889,6 @@ viewport.addEventListener(
 
 let resizeTimer = 0;
 function onViewportChange() {
-  /* Suppress ghost taps / clicks that iOS synthesizes across orientation */
   ignoreOpenUntil = performance.now() + 900;
   blockClick = true;
   moved = true;
@@ -925,7 +914,6 @@ function onViewportChange() {
 }
 window.addEventListener("resize", onViewportChange, { passive: true });
 window.addEventListener("orientationchange", onViewportChange, { passive: true });
-/* Capture-phase: kill click/touchend opens during the ignore window */
 document.addEventListener(
   "click",
   function (e) {
