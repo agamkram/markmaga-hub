@@ -1,6 +1,6 @@
 /**
  * WebGL app sphere — yaw spins the shell, pitch tilts the camera.
- * 16 live equator cards + ghost latitude bands. Focus scale follows look aim.
+ * 16 live equator cards; extras sit on the inner ring. Ghost latitude bands.
  */
 import * as THREE from "./vendor/three.module.min.js";
 import { APPS } from "./apps.js";
@@ -697,19 +697,26 @@ async function buildSphere() {
     })
   );
 
-  for (let i = 0; i < APPS.length; i++) {
-    const app = APPS[i];
-    const img = images[i];
+  function addLive(app, img, lonDeg, latDeg) {
     const tex = makeTexture(function (ctx) {
       paintCard(ctx, { img: img, hint: app.hint, ghost: false, lit: false });
     });
-    addSeat(i * EQUATOR_SLOT_DEG, 0, tex, {
+    addSeat(lonDeg, latDeg, tex, {
       live: true,
       name: app.name,
       href: app.href,
       cardImg: img,
       cardHint: app.hint,
     });
+  }
+
+  const overflow = Math.max(0, APPS.length - REAL);
+  for (let i = 0; i < overflow; i++) {
+    addLive(APPS[i], images[i], i * EQUATOR_SLOT_DEG, LAT_INNER_DEG);
+  }
+  for (let i = 0; i < APPS.length - overflow; i++) {
+    const idx = overflow + i;
+    addLive(APPS[idx], images[idx], i * EQUATOR_SLOT_DEG, 0);
   }
 
   for (let i = 0; i < seats.length; i++) {
