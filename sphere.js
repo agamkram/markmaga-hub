@@ -676,15 +676,21 @@ async function buildSphere() {
     paintCard(ctx, { img: null, hint: "·", ghost: true });
   });
 
-  function addGhostRing(latDeg, n, stagger) {
+  const overflow = Math.max(0, APPS.length - REAL);
+  const innerStep = 360 / INNER_N;
+  const innerOffset = innerStep * 0.5;
+
+  function addGhostRing(latDeg, n, stagger, skipFirst) {
     const step = 360 / n;
     const offset = stagger ? step * 0.5 : 0;
+    const skip = skipFirst || 0;
     for (let i = 0; i < n; i++) {
+      if (i < skip) continue;
       addSeat(i * step + offset, latDeg, ghostTex, { live: false });
     }
   }
 
-  addGhostRing(LAT_INNER_DEG, INNER_N, true);
+  addGhostRing(LAT_INNER_DEG, INNER_N, true, overflow);
   addGhostRing(-LAT_INNER_DEG, INNER_N, true);
   addGhostRing(LAT_OUTER_DEG, OUTER_N, false);
   addGhostRing(-LAT_OUTER_DEG, OUTER_N, false);
@@ -710,9 +716,8 @@ async function buildSphere() {
     });
   }
 
-  const overflow = Math.max(0, APPS.length - REAL);
   for (let i = 0; i < overflow; i++) {
-    addLive(APPS[i], images[i], i * EQUATOR_SLOT_DEG, LAT_INNER_DEG);
+    addLive(APPS[i], images[i], i * innerStep + innerOffset, LAT_INNER_DEG);
   }
   for (let i = 0; i < APPS.length - overflow; i++) {
     const idx = overflow + i;
