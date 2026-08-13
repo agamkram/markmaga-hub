@@ -6,10 +6,10 @@ export const APPS = [
     id: "govdash-app",
     name: "GovDash",
     href: "https://govdash.markmaga.com",
-    img: "images/ss-govdash.webp",
+    img: "images/ss-govdash.webp?v=2",
     imgW: 900,
-    imgH: 1826,
-    hint: "Citizen map of the U.S. federal government · Icicle Tree Circles Sankey · 1,446 nodes",
+    imgH: 1870,
+    hint: "Citizen map of the U.S. federal government · Icicle Tree Circles Sankey · 1,598 nodes",
   },
   {
     id: "supermars-app",
