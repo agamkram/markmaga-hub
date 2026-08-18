@@ -84,13 +84,13 @@ function setMode(next) {
 
 async function goSphere() {
   setMode("sphere");
-  const mod = await import("./sphere.js");
+  const mod = await import("./sphere.js?v=5");
   await mod.enterSphere();
 }
 
 async function goGrid() {
   try {
-    const mod = await import("./sphere.js");
+    const mod = await import("./sphere.js?v=5");
     mod.leaveSphere();
   } catch (_) {}
   setMode("grid");

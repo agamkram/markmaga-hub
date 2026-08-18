@@ -509,9 +509,9 @@ function isChromeTarget(t) {
 }
 
 function dragSigns() {
-  /* Fine pointer: look-steer. Touch: drag-the-world. Flip when outside. */
-  let yawSign = hasTouch ? -1 : 1;
-  let pitchSign = hasTouch ? 1 : -1;
+  /* Same grab as phone/iPad: content follows the hand. Flip when outside. */
+  let yawSign = -1;
+  let pitchSign = 1;
   if (isOutside()) {
     yawSign *= -1;
     pitchSign *= -1;
@@ -774,95 +774,97 @@ function onPinchEnd() {
   pinching = false;
 }
 
-/* Touch path only on touch devices — dual-binding would double-spin on iOS. */
-if (hasTouch) {
-  viewport.addEventListener(
-    "touchstart",
-    function (e) {
-      if (e.touches.length === 2) {
-        onPinchStart(e.touches[0], e.touches[1]);
-        return;
-      }
-      if (e.touches.length !== 1 || pinching) return;
-      const t = e.touches[0];
-      onDown(t.clientX, t.clientY, t.identifier, e.target);
-    },
-    { passive: true }
-  );
-  viewport.addEventListener(
-    "touchmove",
-    function (e) {
-      if (e.touches.length >= 2) {
-        e.preventDefault();
-        if (!pinching) onPinchStart(e.touches[0], e.touches[1]);
-        onPinchMove(e.touches[0], e.touches[1]);
-        return;
-      }
-      if (pinching || !dragging || e.touches.length !== 1) return;
-      const t = e.touches[0];
-      if (activeId != null && t.identifier !== activeId) return;
+/* Finger drag + pinch. Pointer-touch is ignored below so iOS does not double-spin. */
+viewport.addEventListener(
+  "touchstart",
+  function (e) {
+    if (e.touches.length === 2) {
+      onPinchStart(e.touches[0], e.touches[1]);
+      return;
+    }
+    if (e.touches.length !== 1 || pinching) return;
+    const t = e.touches[0];
+    onDown(t.clientX, t.clientY, t.identifier, e.target);
+  },
+  { passive: true }
+);
+viewport.addEventListener(
+  "touchmove",
+  function (e) {
+    if (e.touches.length >= 2) {
       e.preventDefault();
-      onMove(t.clientX, t.clientY);
-    },
-    { passive: false }
-  );
-  viewport.addEventListener(
-    "touchend",
-    function (e) {
-      if (pinching) {
-        if (e.touches.length < 2) onPinchEnd();
-        if (e.touches.length === 1) {
-          const t = e.touches[0];
-          onDown(t.clientX, t.clientY, t.identifier, e.target);
-        }
-        return;
+      if (!pinching) onPinchStart(e.touches[0], e.touches[1]);
+      onPinchMove(e.touches[0], e.touches[1]);
+      return;
+    }
+    if (pinching || !dragging || e.touches.length !== 1) return;
+    const t = e.touches[0];
+    if (activeId != null && t.identifier !== activeId) return;
+    e.preventDefault();
+    onMove(t.clientX, t.clientY);
+  },
+  { passive: false }
+);
+viewport.addEventListener(
+  "touchend",
+  function (e) {
+    if (pinching) {
+      if (e.touches.length < 2) onPinchEnd();
+      if (e.touches.length === 1) {
+        const t = e.touches[0];
+        onDown(t.clientX, t.clientY, t.identifier, e.target);
       }
-      if (e.touches.length === 0) {
-        const t = e.changedTouches && e.changedTouches[0];
-        onUp(t ? t.clientX : lastX, t ? t.clientY : lastY);
-      }
-    },
-    { passive: true }
-  );
-  viewport.addEventListener(
-    "touchcancel",
-    function () {
-      onPinchEnd();
-      onUp(lastX, lastY);
-    },
-    { passive: true }
-  );
-} else {
-  viewport.addEventListener(
-    "pointerdown",
-    function (e) {
-      if (!sphereActive || pinching) return;
-      if (e.pointerType === "mouse" && e.button !== 0) return;
-      if (!onDown(e.clientX, e.clientY, e.pointerId, e.target)) return;
-      try {
-        viewport.setPointerCapture(e.pointerId);
-      } catch (_) {}
-    },
-    { passive: true }
-  );
-  viewport.addEventListener(
-    "pointermove",
-    function (e) {
-      if (!dragging || pinching || e.pointerId !== activeId) return;
-      onMove(e.clientX, e.clientY);
-    },
-    { passive: true }
-  );
-  function endPointer(e) {
-    if (activeId != null && e.pointerId !== activeId) return;
-    onUp(e.clientX, e.clientY);
+      return;
+    }
+    if (e.touches.length === 0) {
+      const t = e.changedTouches && e.changedTouches[0];
+      onUp(t ? t.clientX : lastX, t ? t.clientY : lastY);
+    }
+  },
+  { passive: true }
+);
+viewport.addEventListener(
+  "touchcancel",
+  function () {
+    onPinchEnd();
+    onUp(lastX, lastY);
+  },
+  { passive: true }
+);
+
+/* Mac mouse / trackpad click-drag. Skip pointerType touch (phone/pad use the path above). */
+viewport.addEventListener(
+  "pointerdown",
+  function (e) {
+    if (e.pointerType === "touch") return;
+    if (!sphereActive || pinching) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (!onDown(e.clientX, e.clientY, e.pointerId, e.target)) return;
     try {
-      viewport.releasePointerCapture(e.pointerId);
+      viewport.setPointerCapture(e.pointerId);
     } catch (_) {}
-  }
-  viewport.addEventListener("pointerup", endPointer, { passive: true });
-  viewport.addEventListener("pointercancel", endPointer, { passive: true });
+  },
+  { passive: true }
+);
+viewport.addEventListener(
+  "pointermove",
+  function (e) {
+    if (e.pointerType === "touch") return;
+    if (!dragging || pinching || e.pointerId !== activeId) return;
+    onMove(e.clientX, e.clientY);
+  },
+  { passive: true }
+);
+function endPointer(e) {
+  if (e.pointerType === "touch") return;
+  if (activeId != null && e.pointerId !== activeId) return;
+  onUp(e.clientX, e.clientY);
+  try {
+    viewport.releasePointerCapture(e.pointerId);
+  } catch (_) {}
 }
+viewport.addEventListener("pointerup", endPointer, { passive: true });
+viewport.addEventListener("pointercancel", endPointer, { passive: true });
 
 viewport.addEventListener(
   "click",
@@ -889,9 +891,10 @@ viewport.addEventListener(
       render();
       return;
     }
-    const flip = isOutside() ? -1 : 1;
-    yaw += flip * e.deltaX * 0.1;
-    pitch = clampPitch(pitch - flip * e.deltaY * 0.08);
+    /* Two-finger trackpad reports scroll deltas (natural), opposite of pointer dx/dy. */
+    const signs = dragSigns();
+    yaw -= signs.yawSign * e.deltaX * 0.1;
+    pitch = clampPitch(pitch - signs.pitchSign * e.deltaY * 0.08);
     velYaw = 0;
     velPitch = 0;
     render();
