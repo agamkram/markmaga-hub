@@ -98,9 +98,9 @@ export const APPS = [
     id: "solar-system-app",
     name: "Solar System",
     href: "https://solarsystem.markmaga.com",
-    img: "images/ss-solarsystem.webp?v=2",
+    img: "images/ss-solarsystem.webp?v=3",
     imgW: 900,
-    imgH: 1854,
+    imgH: 1853,
     hint: "3D Sun, planets, moons, and Pluto · slide time · tap a planet · trace epicycles · pinch to zoom",
   },
   {
