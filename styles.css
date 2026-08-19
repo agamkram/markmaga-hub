@@ -446,19 +446,43 @@ body.mode-grid .sphere-viewport {
 .grid-item {
   display: flex;
   flex-direction: column;
-  /* Pull description tight under its screenshot */
   gap: 0.3rem;
   min-width: 0;
+  height: 100%;
   padding: 0.55rem 0.55rem 0.65rem;
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: calc(var(--radius) + 6px);
   background: transparent;
 }
 
-.card-hint {
-  padding: 0 0.15rem;
-  margin: 0;
+/* Same caption slot on every card — one name line, two hint lines. */
+.card-name {
+  display: block;
+  box-sizing: content-box;
+  padding: 0.45rem 0.15rem 0;
+  height: 1.35em;
+  overflow: hidden;
   font-size: clamp(0.75rem, 2vw, 0.8125rem);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-align: center;
+  color: var(--text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card-hint {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  box-sizing: content-box;
+  padding: 0.15rem 0.15rem 0;
+  margin: 0;
+  height: calc(1.45em * 2);
+  overflow: hidden;
+  font-size: clamp(0.75rem, 2vw, 0.8125rem);
+  font-weight: 400;
   line-height: 1.45;
   text-align: center;
   color: var(--text-muted);
@@ -507,9 +531,12 @@ body.mode-grid .sphere-viewport {
 
 /* Bare full screenshots — rounded corners only, no card chrome */
 .card {
-  display: block;
-  height: auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
   width: 100%;
+  min-width: 0;
   text-decoration: none;
   color: inherit;
   background: transparent;

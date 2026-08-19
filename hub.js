@@ -45,8 +45,6 @@ function renderGrid() {
       escapeHtml(app.href) +
       '" data-app="' +
       escapeHtml(app.id) +
-      '" aria-label="' +
-      escapeHtml(app.name) +
       '">' +
       '<span class="card-media">' +
       '<img src="' +
@@ -61,10 +59,15 @@ function renderGrid() {
       (eager ? ' fetchpriority="high"' : "") +
       ' decoding="async" />' +
       "</span>" +
-      "</a>" +
-      '<p class="card-hint">' +
+      '<span class="card-name" title="' +
+      escapeHtml(app.name) +
+      '">' +
+      escapeHtml(app.name) +
+      "</span>" +
+      '<span class="card-hint">' +
       hint +
-      "</p>";
+      "</span>" +
+      "</a>";
     frag.appendChild(li);
   });
   gridEl.replaceChildren(frag);

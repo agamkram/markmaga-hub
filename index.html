@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="description" content="My web apps — Mark Maga." />
+  <meta
+    name="description"
+    content="Small interactive web apps by Mark Maga in Asheville: a citizen map of the U.S. government, 3D Moon and Mars, HyperMiler, and more. Open in the browser, then Add to Home Screen."
+  />
+  <link rel="canonical" href="https://markmaga.com/" />
   <meta name="theme-color" content="#06080d" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -11,15 +15,47 @@
   <!-- social-share meta (tier-a) -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Mark Maga" />
-  <meta property="og:title" content="Mark Maga — Web apps" />
-  <meta property="og:description" content="Small interactive web apps. Tap Open, then Add to Home Screen." />
+  <meta property="og:title" content="Mark Maga — small web apps" />
+  <meta property="og:description" content="Citizen map of the federal government, 3D Moon and Mars, HyperMiler, and more. Open, then Add to Home Screen." />
   <meta property="og:url" content="https://markmaga.com/" />
   <meta property="og:image" content="https://markmaga.com/images/markmaga-brand.webp" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Mark Maga — Web apps" />
-  <meta name="twitter:description" content="Small interactive web apps. Tap Open, then Add to Home Screen." />
+  <meta name="twitter:title" content="Mark Maga — small web apps" />
+  <meta name="twitter:description" content="Citizen map of the federal government, 3D Moon and Mars, HyperMiler, and more. Open, then Add to Home Screen." />
   <meta name="twitter:image" content="https://markmaga.com/images/markmaga-brand.webp" />
-  <title>Mark Maga</title>
+  <title>Mark Maga — small web apps</title>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Mark Maga — small web apps",
+      "url": "https://markmaga.com/",
+      "description": "Small interactive web apps by Mark Maga.",
+      "author": { "@type": "Person", "name": "Mark Maga", "url": "https://markmaga.com/" },
+      "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "GovDash", "url": "https://govdash.markmaga.com", "description": "Citizen map of the U.S. federal government" },
+          { "@type": "ListItem", "position": 2, "name": "SuperMars", "url": "https://supermars.markmaga.com" },
+          { "@type": "ListItem", "position": 3, "name": "SpaceXplore", "url": "https://spacexplore.markmaga.com" },
+          { "@type": "ListItem", "position": 4, "name": "SuperMoon", "url": "https://supermoon.markmaga.com" },
+          { "@type": "ListItem", "position": 5, "name": "Solar Dashboard", "url": "https://solardashboard.markmaga.com" },
+          { "@type": "ListItem", "position": 6, "name": "LightSlice", "url": "https://lightslice.markmaga.com" },
+          { "@type": "ListItem", "position": 7, "name": "HyperMiler", "url": "https://hypermiler.markmaga.com" },
+          { "@type": "ListItem", "position": 8, "name": "AudioSlice", "url": "https://audioslice.markmaga.com" },
+          { "@type": "ListItem", "position": 9, "name": "Lifespan", "url": "https://lifespan.markmaga.com" },
+          { "@type": "ListItem", "position": 10, "name": "US Elevation Map", "url": "https://elevation.markmaga.com" },
+          { "@type": "ListItem", "position": 11, "name": "Solar System", "url": "https://solarsystem.markmaga.com" },
+          { "@type": "ListItem", "position": 12, "name": "CalamityVille", "url": "https://calamityville.markmaga.com" },
+          { "@type": "ListItem", "position": 13, "name": "Orbital View", "url": "https://orbital.markmaga.com" },
+          { "@type": "ListItem", "position": 14, "name": "Solar Light", "url": "https://solar.markmaga.com" },
+          { "@type": "ListItem", "position": 15, "name": "The Weight of Air and the Suction Cup", "url": "https://air.markmaga.com" },
+          { "@type": "ListItem", "position": 16, "name": "Today's Moon", "url": "https://themoon.markmaga.com" },
+          { "@type": "ListItem", "position": 17, "name": "FauciPies", "url": "https://faucipies.markmaga.com" }
+        ]
+      }
+    }
+  </script>
   <!-- MEM monogram: SVG first (crisp), PNG fallbacks -->
   <link rel="icon" href="mem-monogram.svg" type="image/svg+xml" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
@@ -137,7 +173,28 @@
 
   <div class="page" id="grid-page">
     <main>
-      <ul class="grid" id="app-grid"></ul>
+          <ul class="grid" id="app-grid"></ul>
+          <noscript>
+            <ul class="grid">
+              <li class="grid-item"><a class="card" href="https://govdash.markmaga.com"><span class="card-name">GovDash</span><span class="card-hint">Citizen map of the U.S. federal government</span></a></li>
+              <li class="grid-item"><a class="card" href="https://supermars.markmaga.com"><span class="card-name">SuperMars</span></a></li>
+              <li class="grid-item"><a class="card" href="https://spacexplore.markmaga.com"><span class="card-name">SpaceXplore</span></a></li>
+              <li class="grid-item"><a class="card" href="https://supermoon.markmaga.com"><span class="card-name">SuperMoon</span></a></li>
+              <li class="grid-item"><a class="card" href="https://solardashboard.markmaga.com"><span class="card-name">Solar Dashboard</span></a></li>
+              <li class="grid-item"><a class="card" href="https://lightslice.markmaga.com"><span class="card-name">LightSlice</span></a></li>
+              <li class="grid-item"><a class="card" href="https://hypermiler.markmaga.com"><span class="card-name">HyperMiler</span></a></li>
+              <li class="grid-item"><a class="card" href="https://audioslice.markmaga.com"><span class="card-name">AudioSlice</span></a></li>
+              <li class="grid-item"><a class="card" href="https://lifespan.markmaga.com"><span class="card-name">Lifespan</span></a></li>
+              <li class="grid-item"><a class="card" href="https://elevation.markmaga.com"><span class="card-name">US Elevation Map</span></a></li>
+              <li class="grid-item"><a class="card" href="https://solarsystem.markmaga.com"><span class="card-name">Solar System</span></a></li>
+              <li class="grid-item"><a class="card" href="https://calamityville.markmaga.com"><span class="card-name">CalamityVille</span></a></li>
+              <li class="grid-item"><a class="card" href="https://orbital.markmaga.com"><span class="card-name">Orbital View</span></a></li>
+              <li class="grid-item"><a class="card" href="https://solar.markmaga.com"><span class="card-name">Solar Light</span></a></li>
+              <li class="grid-item"><a class="card" href="https://air.markmaga.com"><span class="card-name">The Weight of Air and the Suction Cup</span></a></li>
+              <li class="grid-item"><a class="card" href="https://themoon.markmaga.com"><span class="card-name">Today's Moon</span></a></li>
+              <li class="grid-item"><a class="card" href="https://faucipies.markmaga.com"><span class="card-name">FauciPies</span></a></li>
+            </ul>
+          </noscript>
     </main>
 
     <footer class="footer">
@@ -218,7 +275,7 @@
       });
     })();
   </script>
-  <script type="module" src="hub.js?v=5"></script>
+  <script type="module" src="hub.js?v=7"></script>
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
