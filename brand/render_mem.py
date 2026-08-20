@@ -11,7 +11,9 @@ Usage:
 """
 from __future__ import annotations
 
+import io
 import math
+import struct
 from pathlib import Path
 
 from PIL import Image, ImageDraw
@@ -91,6 +93,39 @@ def draw_mem(size=1024, bg=(8, 12, 18), fg=(232, 237, 244), sw_ratio=0.168):
     return im
 
 
+def save_favicon_ico(path: Path) -> None:
+    """Multi-size ICO for /favicon.ico probes (Google, Vercel, old browsers)."""
+    frames = [
+        draw_mem(16, fg=(255, 255, 255), sw_ratio=0.28),
+        draw_mem(32, fg=(255, 255, 255), sw_ratio=0.22),
+        draw_mem(48, fg=(255, 255, 255), sw_ratio=0.20),
+    ]
+    payloads = []
+    for im in frames:
+        buf = io.BytesIO()
+        im.convert("RGBA").save(buf, format="PNG")
+        payloads.append(buf.getvalue())
+    offset = 6 + 16 * len(frames)
+    out = bytearray(struct.pack("<HHH", 0, 1, len(frames)))
+    for im, payload in zip(frames, payloads):
+        w, h = im.size
+        out += struct.pack(
+            "<BBBBHHII",
+            w if w < 256 else 0,
+            h if h < 256 else 0,
+            0,
+            0,
+            1,
+            32,
+            len(payload),
+            offset,
+        )
+        offset += len(payload)
+    for payload in payloads:
+        out += payload
+    path.write_bytes(bytes(out))
+
+
 def main():
     suite = [
         (1024, "mem-review-1024.png", 0.168),
@@ -104,6 +139,13 @@ def main():
         fg = (255, 255, 255) if sz <= 32 else (232, 237, 244)
         draw_mem(sz, fg=fg, sw_ratio=swr).save(OUT / name)
         print("saved", name)
+
+    ico = OUT / "favicon.ico"
+    save_favicon_ico(ico)
+    print("saved", ico.name)
+    root_ico = OUT.parent / "favicon.ico"
+    root_ico.write_bytes(ico.read_bytes())
+    print("copied", root_ico.name, "to site root")
 
 
 if __name__ == "__main__":
