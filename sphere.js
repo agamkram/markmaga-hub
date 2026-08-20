@@ -3,7 +3,7 @@
  * 16 live equator cards; extras sit on the inner ring. Ghost latitude bands.
  */
 import * as THREE from "./vendor/three.module.min.js";
-import { APPS } from "./apps.js";
+import { APPS } from "./apps.js?v=6";
 
 const REAL = 16;
 const EQUATOR_SLOT_DEG = 360 / REAL;
@@ -29,6 +29,7 @@ const TEX_H = TEX_PAD + TEX_MEDIA_H + TEX_HINT + TEX_PAD;
 const STROKE_IDLE = "rgba(255,255,255,0.5)";
 const STROKE_LIT = "rgba(80, 220, 140, 0.98)";
 const STROKE_GHOST = "rgba(255,255,255,0.28)";
+const HINT_HOT = "#f87171";
 
 const viewport = document.getElementById("sphere-viewport");
 if (!viewport) throw new Error("missing #sphere-viewport");
@@ -79,8 +80,37 @@ function wrapHint(ctx, text, maxWidth) {
   return lines;
 }
 
+function fillHintLine(ctx, line, x, y, bodyColor, hotWord) {
+  const idx = hotWord ? line.indexOf(hotWord) : -1;
+  if (idx >= 0) {
+    const before = line.slice(0, idx);
+    const after = line.slice(idx + hotWord.length);
+    const wBefore = ctx.measureText(before).width;
+    const wHot = ctx.measureText(hotWord).width;
+    const wAfter = ctx.measureText(after).width;
+    let cx = x - (wBefore + wHot + wAfter) / 2;
+    ctx.textAlign = "left";
+    if (before) {
+      ctx.fillStyle = bodyColor;
+      ctx.fillText(before, cx, y);
+      cx += wBefore;
+    }
+    ctx.fillStyle = HINT_HOT;
+    ctx.fillText(hotWord, cx, y);
+    cx += wHot;
+    if (after) {
+      ctx.fillStyle = bodyColor;
+      ctx.fillText(after, cx, y);
+    }
+    ctx.textAlign = "center";
+    return;
+  }
+  ctx.fillStyle = bodyColor;
+  ctx.fillText(line, x, y);
+}
+
 function paintCard(ctx, opts) {
-  const { img, hint, ghost, lit } = opts;
+  const { img, hint, hintHot, ghost, lit } = opts;
   const pad = TEX_PAD;
   const radius = Math.round(TEX_W * 0.055);
   ctx.clearRect(0, 0, TEX_W, TEX_H);
@@ -124,15 +154,16 @@ function paintCard(ctx, opts) {
   }
   ctx.restore();
 
-  ctx.fillStyle = ghost ? "rgba(139,149,168,0.35)" : "rgba(232,236,242,0.82)";
+  const bodyColor = ghost ? "rgba(139,149,168,0.35)" : "rgba(232,236,242,0.82)";
   ctx.font = "500 " + Math.round(TEX_W * 0.042) + "px DM Sans, system-ui, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "top";
   const lines = ghost ? [] : wrapHint(ctx, hint, mediaW - 8);
   const lineH = Math.round(TEX_W * 0.048);
   let ty = my + mediaH + Math.round(TEX_HINT * 0.12);
+  const hot = ghost ? "" : hintHot || "";
   for (let i = 0; i < lines.length; i++) {
-    ctx.fillText(lines[i], TEX_W / 2, ty + i * lineH);
+    fillHintLine(ctx, lines[i], TEX_W / 2, ty + i * lineH, bodyColor, hot);
   }
 }
 
@@ -173,6 +204,7 @@ function setCardTapLit(seat, lit) {
   paintCard(map.userData.ctx, {
     img: seat.cardImg,
     hint: seat.cardHint,
+    hintHot: seat.cardHintHot,
     ghost: false,
     lit: lit,
   });
@@ -316,6 +348,7 @@ function addSeat(lonDeg, latDeg, texture, meta) {
     tapLit: false,
     cardImg: meta.cardImg || null,
     cardHint: meta.cardHint || "",
+    cardHintHot: meta.cardHintHot || "",
     live: !!meta.live,
     href: meta.href || null,
   };
@@ -705,7 +738,13 @@ async function buildSphere() {
 
   function addLive(app, img, lonDeg, latDeg) {
     const tex = makeTexture(function (ctx) {
-      paintCard(ctx, { img: img, hint: app.hint, ghost: false, lit: false });
+      paintCard(ctx, {
+        img: img,
+        hint: app.hint,
+        hintHot: app.hintHot,
+        ghost: false,
+        lit: false,
+      });
     });
     addSeat(lonDeg, latDeg, tex, {
       live: true,
@@ -713,6 +752,7 @@ async function buildSphere() {
       href: app.href,
       cardImg: img,
       cardHint: app.hint,
+      cardHintHot: app.hintHot || "",
     });
   }
 

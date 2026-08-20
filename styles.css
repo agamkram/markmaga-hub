@@ -493,6 +493,11 @@ body.mode-grid .sphere-viewport {
   font-weight: inherit;
 }
 
+.card-hint .hint-red {
+  color: #f87171;
+  font-weight: inherit;
+}
+
 /* Tablet / Mac / PC — 3 full phone screenshots wide */
 @media (min-width: 720px) {
   .grid {

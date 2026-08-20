@@ -6,10 +6,10 @@ export const APPS = [
     id: "govdash-app",
     name: "GovDash",
     href: "https://govdash.markmaga.com",
-    img: "images/ss-govdash.webp?v=2",
+    img: "images/ss-govdash.webp?v=3",
     imgW: 900,
-    imgH: 1870,
-    hint: "Citizen map of the U.S. federal government · Icicle Tree Circles Sankey · 1,598 nodes",
+    imgH: 1838,
+    hint: "Citizen map of the U.S. federal government · Icicle Tree Circles Sankey",
   },
   {
     id: "supermars-app",
@@ -18,7 +18,7 @@ export const APPS = [
     img: "images/ss-supermars.webp",
     imgW: 900,
     imgH: 1863,
-    hint: "Hi-res 3D Mars · live phase for your place · rise high set · transfer window · pinch zoom · two-finger pan",
+    hint: "Hi-res 3D Mars · live phase for your place · rise high set",
   },
   {
     id: "spacexplor-app",
@@ -27,7 +27,7 @@ export const APPS = [
     img: "images/ss-spacexplore.webp",
     imgW: 900,
     imgH: 1854,
-    hint: "Next flight · ops & specs for all programs · sites map · cadence · top X accounts",
+    hint: "Next flight · ops & specs for all programs · sites map",
   },
   {
     id: "supermoon-app",
@@ -36,7 +36,7 @@ export const APPS = [
     img: "images/ss-supermoon.webp",
     imgW: 900,
     imgH: 1862,
-    hint: "Hi-res 3D Moon · live phase for your place · rise high set · tides · pinch zoom · two-finger pan",
+    hint: "Hi-res 3D Moon · live phase for your place · rise high set · tides",
   },
   {
     id: "solardashboard-app",
@@ -45,7 +45,7 @@ export const APPS = [
     img: "images/ss-solardashboard.webp",
     imgW: 900,
     imgH: 1847,
-    hint: "UV · irradiance · air · pollen · sky path · skin type burn time · slide the day",
+    hint: "UV · irradiance · air · pollen · sky path · skin type burn time",
   },
   {
     id: "lightslice-app",
@@ -54,7 +54,7 @@ export const APPS = [
     img: "images/ss-lightslice.webp",
     imgW: 900,
     imgH: 1876,
-    hint: "Live camera spectral band · Drag LO/HI · ROYGBIV · animal & colorblind vision",
+    hint: "Live camera spectral band · Drag LO/HI · ROYGBIV",
   },
   {
     id: "hypermiler-app",
@@ -63,7 +63,7 @@ export const APPS = [
     img: "images/ss-hypermiler.webp",
     imgW: 900,
     imgH: 1860,
-    hint: "Live accel, brake, corner, bump g · Smooth score · GPS speed · drive smooth, win big",
+    hint: "Live accel, brake, corner, bump g · Smooth score · GPS speed",
   },
   {
     id: "audioslice-app",
@@ -72,9 +72,9 @@ export const APPS = [
     img: "images/ss-audioslice.webp",
     imgW: 900,
     imgH: 1856,
-    hint: "Live mic spectrogram · Move LO/HI for custom band · Chirps, Speech, De-hiss, WIRED HEADPHONES",
+    hint: "Live mic spectrogram · Move LO/HI · WIRED HEADPHONES",
     hintHtml:
-      'Live mic spectrogram · Move LO/HI for custom band · Chirps, Speech, De-hiss, <span class="hint-white">WIRED HEADPHONES</span>',
+      'Live mic spectrogram · Move LO/HI · <span class="hint-white">WIRED HEADPHONES</span>',
   },
   {
     id: "lifespan-app",
@@ -83,7 +83,7 @@ export const APPS = [
     img: "images/ss-lifespan.webp",
     imgW: 900,
     imgH: 1842,
-    hint: "Slide age, height, weight, VO2 and habits · see BMI, remaining years, lifespan, and last year · live formula",
+    hint: "Slide age, height, weight, VO2 and habits · see BMI, remaining years",
   },
   {
     id: "elevation-app",
@@ -92,7 +92,7 @@ export const APPS = [
     img: "images/ss-elevation.webp",
     imgW: 900,
     imgH: 1852,
-    hint: "Tap the map for elevation · Tap save to add second point, see elevation and temperature differences",
+    hint: "Tap the map for elevation · Tap save to add second point",
   },
   {
     id: "solar-system-app",
@@ -101,7 +101,7 @@ export const APPS = [
     img: "images/ss-solarsystem.webp?v=3",
     imgW: 900,
     imgH: 1853,
-    hint: "3D Sun, planets, moons, and Pluto · slide time · tap a planet · trace epicycles · pinch to zoom",
+    hint: "3D Sun, planets, moons, and Pluto · slide time · tap a planet",
   },
   {
     id: "calamityville-app",
@@ -110,7 +110,7 @@ export const APPS = [
     img: "images/ss-calamityville.webp",
     imgW: 900,
     imgH: 1864,
-    hint: "Live disasters on a 3D Earth · quakes · storms · fires · pinch to zoom · tap pins for details",
+    hint: "Live disasters on a 3D Earth · quakes · storms · fires",
   },
   {
     id: "satellite-app",
@@ -119,7 +119,7 @@ export const APPS = [
     img: "images/ss-orbitalview.webp",
     imgW: 900,
     imgH: 1851,
-    hint: "3D Earth and live satellites · slide time · tap Constellations · pinch to zoom",
+    hint: "3D Earth and live satellites · slide time · tap Constellations",
   },
   {
     id: "solar-light-app",
@@ -128,7 +128,7 @@ export const APPS = [
     img: "images/ss-solarlight.webp",
     imgW: 900,
     imgH: 1854,
-    hint: "Slide time to see sunlight as % of solar noon · tap Edit to set your location",
+    hint: "Slide time to see sunlight as % of solar noon",
   },
   {
     id: "suction-cup-app",
@@ -137,7 +137,7 @@ export const APPS = [
     img: "images/ss-suctioncup.webp",
     imgW: 900,
     imgH: 1846,
-    hint: "Live pressure at your location · slide cup and vacuum · see pull in lbs",
+    hint: "Live pressure at your location · slide cup and vacuum",
   },
   {
     id: "moon-phase-app",
@@ -146,7 +146,7 @@ export const APPS = [
     img: "images/ss-todaysmoon.webp",
     imgW: 900,
     imgH: 1836,
-    hint: "Drag slider for phases · tap moon for red · pinch to zoom · idealized shading",
+    hint: "Drag slider for phases · tap moon for red · pinch to zoom",
   },
   {
     id: "faucipies-app",
@@ -156,5 +156,17 @@ export const APPS = [
     imgW: 900,
     imgH: 1847,
     hint: "Pick a pie · wind up · let fly · cream splat reveals the story",
+  },
+  {
+    id: "spacetime-app",
+    name: "SpaceTime",
+    href: "https://spacetime.markmaga.com",
+    img: "images/ss-spacetime.webp",
+    imgW: 900,
+    imgH: 1856,
+    hint: "PROTOTYPE · Record a 3D path in time · GPS + IMU",
+    hintHot: "PROTOTYPE",
+    hintHtml:
+      '<span class="hint-red">PROTOTYPE</span> · Record a 3D path in time · GPS + IMU',
   },
 ];
