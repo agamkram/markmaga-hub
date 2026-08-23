@@ -3,6 +3,15 @@
  */
 export const APPS = [
   {
+    id: "moleculefactory-app",
+    name: "MoleculeFactory",
+    href: "https://moleculefactory.markmaga.com",
+    img: "images/ss-moleculefactory.webp",
+    imgW: 900,
+    imgH: 1863,
+    hint: "Build molecules in 3D · library stories · free-build from the table",
+  },
+  {
     id: "govdash-app",
     name: "GovDash",
     href: "https://govdash.markmaga.com",
@@ -64,15 +73,6 @@ export const APPS = [
     imgW: 900,
     imgH: 1860,
     hint: "Live accel, brake, corner, bump g · Smooth score · GPS speed",
-  },
-  {
-    id: "moleculefactory-app",
-    name: "MoleculeFactory",
-    href: "https://moleculefactory.markmaga.com",
-    img: "images/ss-moleculefactory.webp",
-    imgW: 900,
-    imgH: 1863,
-    hint: "Build molecules in 3D · library stories · free-build from the table",
   },
   {
     id: "audioslice-app",
