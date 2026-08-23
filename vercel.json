@@ -1,5 +1,13 @@
 {
   "framework": null,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.markmaga.com" }],
+      "destination": "https://markmaga.com/:path*",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)\\.(jpg|jpeg|webp|gif|geojson|woff2?)",
