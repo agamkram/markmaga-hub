@@ -66,6 +66,15 @@ export const APPS = [
     hint: "Live accel, brake, corner, bump g · Smooth score · GPS speed",
   },
   {
+    id: "moleculefactory-app",
+    name: "MoleculeFactory",
+    href: "https://moleculefactory.markmaga.com",
+    img: "images/ss-moleculefactory.webp",
+    imgW: 900,
+    imgH: 1863,
+    hint: "Build molecules in 3D · library stories · free-build from the table",
+  },
+  {
     id: "audioslice-app",
     name: "AudioSlice",
     href: "https://audioslice.markmaga.com",
