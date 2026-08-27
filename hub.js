@@ -1,4 +1,4 @@
-import { APPS } from "./apps.js?v=9";
+import { APPS } from "./apps.js?v=10";
 
 const MODE_KEY = "markmaga-hub-mode";
 

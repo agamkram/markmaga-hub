@@ -125,9 +125,9 @@ export const APPS = [
     id: "satellite-app",
     name: "Orbital View",
     href: "https://orbital.markmaga.com",
-    img: "images/ss-orbitalview.webp",
+    img: "images/ss-orbitalview.webp?v=2",
     imgW: 900,
-    imgH: 1851,
+    imgH: 1854,
     hint: "3D Earth and live satellites · slide time · tap Constellations",
   },
   {
