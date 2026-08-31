@@ -6,9 +6,9 @@ export const APPS = [
     id: "bubblincrude-app",
     name: "BubblinCrude",
     href: "https://bubblincrude.markmaga.com",
-    img: "images/ss-bubblincrude.webp",
+    img: "images/ss-bubblincrude.webp?v=2",
     imgW: 900,
-    imgH: 1865,
+    imgH: 1868,
     hint: "Global crude streams · filter, assay, compare WTI, Merey-16, Boscan",
   },
   {
