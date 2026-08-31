@@ -3,6 +3,15 @@
  */
 export const APPS = [
   {
+    id: "bubblincrude-app",
+    name: "BubblinCrude",
+    href: "https://bubblincrude.markmaga.com",
+    img: "images/ss-bubblincrude.webp",
+    imgW: 900,
+    imgH: 1865,
+    hint: "Global crude streams · filter, assay, compare WTI, Merey-16, Boscan",
+  },
+  {
     id: "moleculefactory-app",
     name: "MoleculeFactory",
     href: "https://moleculefactory.markmaga.com",
