@@ -1,4 +1,4 @@
-import { APPS } from "./apps.js?v=15";
+import { APPS } from "./apps.js?v=16";
 
 const MODE_KEY = "markmaga-hub-mode";
 
@@ -87,13 +87,13 @@ function setMode(next) {
 
 async function goSphere() {
   setMode("sphere");
-  const mod = await import("./sphere.js?v=10");
+  const mod = await import("./sphere.js?v=11");
   await mod.enterSphere();
 }
 
 async function goGrid() {
   try {
-    const mod = await import("./sphere.js?v=10");
+    const mod = await import("./sphere.js?v=11");
     mod.leaveSphere();
   } catch (_) {}
   setMode("grid");
