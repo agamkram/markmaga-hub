@@ -227,7 +227,7 @@ function makeTexture(paintFn, layout) {
   paintFn(ctx);
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
-  tex.anisotropy = 4;
+  tex.anisotropy = Math.max(1, renderer.capabilities.getMaxAnisotropy());
   tex.needsUpdate = true;
   tex.userData.canvas = canvas;
   tex.userData.ctx = ctx;
@@ -507,7 +507,7 @@ function updateFocus() {
       s.mesh.scale.setScalar(scale);
     }
     s.mesh.renderOrder = Math.round(w * 1000);
-    if (s.live && !pinching) {
+    if (s.live) {
       setCardTapLit(s, openAimWeight(s.lon, s.lat) >= OPEN_AIM_MIN);
     }
   }
@@ -576,9 +576,9 @@ function ensureAnimLoop() {
 }
 
 function render() {
-  /* One GPU frame per vsync. Pinch/trackpad used to render immediately
-     and again on the animation loop — that’s the hitch, not WebP bytes. */
-  ensureAnimLoop();
+  const settling = applyPose();
+  renderer.render(scene, camera);
+  if (settling || dragging || coasting || pinching) ensureAnimLoop();
 }
 
 function isChromeTarget(t) {
