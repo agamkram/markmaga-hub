@@ -229,9 +229,6 @@ function makeTexture(paintFn, layout) {
   paintFn(ctx);
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
-  tex.generateMipmaps = false;
-  tex.minFilter = THREE.LinearFilter;
-  tex.magFilter = THREE.LinearFilter;
   tex.anisotropy = 4;
   tex.needsUpdate = true;
   tex.userData.canvas = canvas;
@@ -343,7 +340,10 @@ function aimWeight(lon, lat, aimLon, aimLat) {
   const nx = dLon / (EQUATOR_SLOT_DEG * 0.75);
   const ny = dLat / (LAT_INNER_DEG * 0.62);
   const d = Math.hypot(nx, ny);
-  return d >= 1 ? 0 : 1 - d;
+  if (d >= 1) return 0;
+  /* Cosine ramp: derivative 0 at center and at the edge, no linear kink. */
+  const t = 1 - d;
+  return 0.5 - 0.5 * Math.cos(Math.PI * t);
 }
 
 function focusWeight(lon, lat) {
@@ -377,7 +377,7 @@ function addSeat(lonDeg, latDeg, texture, meta) {
   const mat = new THREE.MeshBasicMaterial({
     map: texture,
     transparent: true,
-    depthWrite: false,
+    depthWrite: true,
     side: THREE.FrontSide,
   });
   const mesh = new THREE.Mesh(geo, mat);
@@ -512,7 +512,7 @@ function updateFocus() {
       s.mesh.scale.setScalar(scale);
     }
     s.mesh.renderOrder = Math.round(w * 1000);
-    if (s.live && !pinching && !dragging) {
+    if (s.live && !pinching) {
       setCardTapLit(s, openAimWeight(s.lon, s.lat) >= OPEN_AIM_MIN);
     }
   }
