@@ -3,7 +3,7 @@
  * 16 live equator cards; extras sit on the inner ring. Ghost latitude bands.
  */
 import * as THREE from "./vendor/three.module.min.js";
-import { APPS } from "./apps.js?v=17";
+import { APPS } from "./apps.js?v=16";
 
 const REAL = 16;
 const EQUATOR_SLOT_DEG = 360 / REAL;
@@ -25,34 +25,6 @@ const TEX_HINT = Math.round(TEX_W * 0.14);
 const TEX_MEDIA_W = TEX_W - TEX_PAD * 2;
 const TEX_MEDIA_H = Math.round(TEX_MEDIA_W * CARD_ASPECT);
 const TEX_H = TEX_PAD + TEX_MEDIA_H + TEX_HINT + TEX_PAD;
-
-function ghostLayout() {
-  return {
-    mediaW: TEX_MEDIA_W,
-    mediaH: TEX_MEDIA_H,
-    pad: TEX_PAD,
-    hint: TEX_HINT,
-    texW: TEX_W,
-    texH: TEX_H,
-  };
-}
-
-/** Live cards use the screenshot’s native pixels — never downsample to TEX_W. */
-function layoutForImage(img) {
-  if (!img || !img.naturalWidth || !img.naturalHeight) return ghostLayout();
-  const mediaW = img.naturalWidth;
-  const mediaH = img.naturalHeight;
-  const pad = Math.round(mediaW * 0.045);
-  const hint = Math.round(mediaW * 0.14);
-  return {
-    mediaW: mediaW,
-    mediaH: mediaH,
-    pad: pad,
-    hint: hint,
-    texW: mediaW + pad * 2,
-    texH: pad + mediaH + hint + pad,
-  };
-}
 
 const STROKE_IDLE = "rgba(255,255,255,0.5)";
 const STROKE_LIT = "rgba(80, 220, 140, 0.98)";
@@ -139,16 +111,11 @@ function fillHintLine(ctx, line, x, y, bodyColor, hotWord) {
 
 function paintCard(ctx, opts) {
   const { img, hint, hintHot, ghost, lit } = opts;
-  const L = opts.layout || layoutForImage(img);
-  const pad = L.pad;
-  const texW = L.texW;
-  const texH = L.texH;
-  const radius = Math.round(texW * 0.055);
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = "high";
-  ctx.clearRect(0, 0, texW, texH);
+  const pad = TEX_PAD;
+  const radius = Math.round(TEX_W * 0.055);
+  ctx.clearRect(0, 0, TEX_W, TEX_H);
 
-  roundRect(ctx, 1, 1, texW - 2, texH - 2, radius);
+  roundRect(ctx, 1, 1, TEX_W - 2, TEX_H - 2, radius);
   ctx.fillStyle = ghost ? "rgba(16, 22, 34, 0.28)" : "rgba(6, 8, 13, 0.94)";
   ctx.fill();
   if (ghost) {
@@ -163,8 +130,8 @@ function paintCard(ctx, opts) {
   }
   ctx.stroke();
 
-  const mediaW = L.mediaW;
-  const mediaH = L.mediaH;
+  const mediaW = TEX_MEDIA_W;
+  const mediaH = TEX_MEDIA_H;
   const mx = pad;
   const my = pad;
 
@@ -180,23 +147,23 @@ function paintCard(ctx, opts) {
     ctx.fillStyle = "rgba(40, 52, 72, 0.95)";
     ctx.fillRect(mx, my, mediaW, mediaH);
     ctx.fillStyle = "rgba(255,255,255,0.14)";
-    ctx.font = "600 " + Math.round(texW * 0.12) + "px DM Sans, system-ui, sans-serif";
+    ctx.font = "600 " + Math.round(TEX_W * 0.12) + "px DM Sans, system-ui, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("·", texW / 2, my + mediaH / 2);
+    ctx.fillText("·", TEX_W / 2, my + mediaH / 2);
   }
   ctx.restore();
 
   const bodyColor = ghost ? "rgba(139,149,168,0.35)" : "rgba(232,236,242,0.82)";
-  ctx.font = "500 " + Math.round(texW * 0.042) + "px DM Sans, system-ui, sans-serif";
+  ctx.font = "500 " + Math.round(TEX_W * 0.042) + "px DM Sans, system-ui, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "top";
   const lines = ghost ? [] : wrapHint(ctx, hint, mediaW - 8);
-  const lineH = Math.round(texW * 0.048);
-  let ty = my + mediaH + Math.round(L.hint * 0.12);
+  const lineH = Math.round(TEX_W * 0.048);
+  let ty = my + mediaH + Math.round(TEX_HINT * 0.12);
   const hot = ghost ? "" : hintHot || "";
   for (let i = 0; i < lines.length; i++) {
-    fillHintLine(ctx, lines[i], texW / 2, ty + i * lineH, bodyColor, hot);
+    fillHintLine(ctx, lines[i], TEX_W / 2, ty + i * lineH, bodyColor, hot);
   }
 }
 
@@ -205,11 +172,7 @@ function loadImage(src) {
     const img = new Image();
     img.decoding = "async";
     img.onload = function () {
-      const done = function () {
-        resolve(img);
-      };
-      if (img.decode) img.decode().then(done, done);
-      else done();
+      resolve(img);
     };
     img.onerror = function () {
       reject(new Error("img " + src));
@@ -218,20 +181,18 @@ function loadImage(src) {
   });
 }
 
-function makeTexture(paintFn, layout) {
-  const L = layout || ghostLayout();
+function makeTexture(paintFn) {
   const canvas = document.createElement("canvas");
-  canvas.width = L.texW;
-  canvas.height = L.texH;
+  canvas.width = TEX_W;
+  canvas.height = TEX_H;
   const ctx = canvas.getContext("2d");
   paintFn(ctx);
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
-  tex.anisotropy = Math.max(1, renderer.capabilities.getMaxAnisotropy());
+  tex.anisotropy = 4;
   tex.needsUpdate = true;
   tex.userData.canvas = canvas;
   tex.userData.ctx = ctx;
-  tex.userData.layout = L;
   return tex;
 }
 
@@ -246,7 +207,6 @@ function setCardTapLit(seat, lit) {
     hintHot: seat.cardHintHot,
     ghost: false,
     lit: lit,
-    layout: map.userData.layout || layoutForImage(seat.cardImg),
   });
   map.needsUpdate = true;
 }
@@ -365,10 +325,7 @@ function placeSeat(pivot, lonDeg, latDeg, r, faceOutward) {
 }
 
 function addSeat(lonDeg, latDeg, texture, meta) {
-  const canvas = texture.image;
-  const texAspect =
-    canvas && canvas.width ? canvas.height / canvas.width : TEX_H / TEX_W;
-  const geo = new THREE.PlaneGeometry(cardW, cardW * texAspect);
+  const geo = new THREE.PlaneGeometry(cardW, cardH);
   const mat = new THREE.MeshBasicMaterial({
     map: texture,
     transparent: true,
@@ -394,7 +351,6 @@ function addSeat(lonDeg, latDeg, texture, meta) {
     cardHintHot: meta.cardHintHot || "",
     live: !!meta.live,
     href: meta.href || null,
-    texAspect: texAspect,
   };
   mesh.userData.seat = seat;
   seats.push(seat);
@@ -423,11 +379,7 @@ function layoutMetrics() {
   const seat = (2 * Math.PI) / REAL;
   const FILL = 0.45;
   cardW = 2 * radius * Math.tan((seat * FILL) / 2);
-  let packAspect = TEX_H / TEX_W;
-  for (let i = 0; i < seats.length; i++) {
-    packAspect = Math.max(packAspect, seats[i].texAspect || 0);
-  }
-  cardH = cardW * packAspect;
+  cardH = cardW * (TEX_H / TEX_W);
 
   const minStep = Math.min(LAT_INNER_DEG, LAT_OUTER_DEG - LAT_INNER_DEG);
   const gapFrac = 0.12;
@@ -742,10 +694,7 @@ function relayoutSeats() {
     const s = seats[i];
     s.baseR = radius;
     s.mesh.geometry.dispose();
-    s.mesh.geometry = new THREE.PlaneGeometry(
-      cardW,
-      cardW * (s.texAspect || TEX_H / TEX_W)
-    );
+    s.mesh.geometry = new THREE.PlaneGeometry(cardW, cardH);
     s.lastScale = -1;
   }
   resize();
@@ -788,7 +737,6 @@ async function buildSphere() {
   );
 
   function addLive(app, img, lonDeg, latDeg) {
-    const layout = layoutForImage(img);
     const tex = makeTexture(function (ctx) {
       paintCard(ctx, {
         img: img,
@@ -796,9 +744,8 @@ async function buildSphere() {
         hintHot: app.hintHot,
         ghost: false,
         lit: false,
-        layout: layout,
       });
-    }, layout);
+    });
     addSeat(lonDeg, latDeg, tex, {
       live: true,
       name: app.name,
@@ -817,7 +764,12 @@ async function buildSphere() {
     addLive(APPS[idx], images[idx], i * EQUATOR_SLOT_DEG, 0);
   }
 
-  relayoutSeats();
+  for (let i = 0; i < seats.length; i++) {
+    seats[i].baseR = radius;
+  }
+
+  resize();
+  render();
 }
 
 /* —— Input —— */
