@@ -3,6 +3,15 @@
  */
 export const APPS = [
   {
+    id: "globalflows-app",
+    name: "GlobalFlows",
+    href: "https://globalflows.markmaga.com",
+    img: "images/ss-globalflows.webp",
+    imgW: 900,
+    imgH: 1798,
+    hint: "Live global money machine · liquidity · rates · growth · inflation · risk",
+  },
+  {
     id: "bubblincrude-app",
     name: "BubblinCrude",
     href: "https://bubblincrude.markmaga.com",
