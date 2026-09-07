@@ -9,6 +9,8 @@ const REAL = 16;
 const EQUATOR_SLOT_DEG = 360 / REAL;
 const CARD_ASPECT = 1855 / 900;
 const FOCUS_BOOST = 1.5;
+/** Scale eases every frame on Mac and touch — input arrives in chunks. */
+const FOCUS_LERP_MAC = 0.34;
 const FOCUS_LERP_TOUCH = 0.22;
 const OPEN_AIM_MIN = 0.55;
 const OUTSIDE_FACTOR = 1.02;
@@ -69,7 +71,7 @@ const hasTouch = "ontouchstart" in window || (navigator.maxTouchPoints || 0) > 0
 const finePointer =
   typeof window.matchMedia === "function" &&
   window.matchMedia("(pointer: fine)").matches;
-const smoothFocus = !finePointer;
+const focusLerp = finePointer ? FOCUS_LERP_MAC : FOCUS_LERP_TOUCH;
 
 function wrap180(deg) {
   return ((((deg + 180) % 360) + 360) % 360) - 180;
@@ -338,7 +340,10 @@ function aimWeight(lon, lat, aimLon, aimLat) {
   const nx = dLon / (EQUATOR_SLOT_DEG * 0.75);
   const ny = dLat / (LAT_INNER_DEG * 0.62);
   const d = Math.hypot(nx, ny);
-  return d >= 1 ? 0 : 1 - d;
+  if (d >= 1) return 0;
+  /* Cosine ramp: derivative 0 at center and at the edge, no linear kink. */
+  const t = 1 - d;
+  return 0.5 - 0.5 * Math.cos(Math.PI * t);
 }
 
 function focusWeight(lon, lat) {
@@ -476,7 +481,7 @@ function updateFocus() {
   const fade =
     camDist <= 0.001 ? 1 : Math.max(0, 1 - camDist / (radius * 0.85));
   const outside = isOutside();
-  const lerp = smoothFocus ? FOCUS_LERP_TOUCH : 1;
+  const lerp = focusLerp;
   let settling = false;
   shell.updateMatrixWorld(true);
   for (let i = 0; i < seats.length; i++) {
