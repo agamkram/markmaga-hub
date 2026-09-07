@@ -146,23 +146,23 @@ function paintCard(ctx, opts) {
   const texW = L.texW;
   const texH = L.texH;
   const radius = Math.round(texW * 0.055);
+  const strokeW = (ghost || !lit ? 2 : 3) * (texW / TEX_W);
+  const inset = strokeW / 2;
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
   ctx.clearRect(0, 0, texW, texH);
 
-  roundRect(ctx, 1, 1, texW - 2, texH - 2, radius);
+  roundRect(ctx, inset, inset, texW - strokeW, texH - strokeW, radius);
   ctx.fillStyle = ghost ? "rgba(16, 22, 34, 0.28)" : "rgba(6, 8, 13, 0.94)";
   ctx.fill();
   if (ghost) {
     ctx.strokeStyle = STROKE_GHOST;
-    ctx.lineWidth = 2;
   } else if (lit) {
     ctx.strokeStyle = STROKE_LIT;
-    ctx.lineWidth = 3;
   } else {
     ctx.strokeStyle = STROKE_IDLE;
-    ctx.lineWidth = 2;
   }
+  ctx.lineWidth = strokeW;
   ctx.stroke();
 
   const mediaW = L.mediaW;
