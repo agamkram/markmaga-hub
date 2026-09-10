@@ -3,6 +3,15 @@
  */
 export const APPS = [
   {
+    id: "globalflows-app",
+    name: "GlobalFlows",
+    href: "https://globalflows.markmaga.com",
+    img: "images/ss-globalflows.webp",
+    imgW: 900,
+    imgH: 1798,
+    hint: "Live global money machine · liquidity · rates · growth · inflation · risk",
+  },
+  {
     id: "bubblincrude-app",
     name: "BubblinCrude",
     href: "https://bubblincrude.markmaga.com",
@@ -186,14 +195,5 @@ export const APPS = [
     hintHot: "PROTOTYPE",
     hintHtml:
       '<span class="hint-red">PROTOTYPE</span> · Record a 3D path in time · GPS + IMU',
-  },
-  {
-    id: "globalflows-app",
-    name: "GlobalFlows",
-    href: "https://globalflows.markmaga.com",
-    img: "images/ss-globalflows.webp",
-    imgW: 900,
-    imgH: 1798,
-    hint: "Live global money machine · liquidity · rates · growth · inflation · risk",
   },
 ];
