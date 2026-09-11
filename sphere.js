@@ -3,7 +3,7 @@
  * 16 live equator cards; extras sit on the inner ring. Ghost latitude bands.
  */
 import * as THREE from "./vendor/three.module.min.js";
-import { APPS } from "./apps.js?v=20";
+import { APPS } from "./apps.js?v=21";
 
 const REAL = 16;
 const EQUATOR_SLOT_DEG = 360 / REAL;
