@@ -108,15 +108,15 @@ body::before {
 .orbit-btn {
   display: none;
   margin: 0;
-  padding: 0.28rem 0.44rem;
+  padding: 0.14rem 0.22rem;
   min-width: var(--nav-btn-size);
-  min-height: 2.7rem;
+  min-height: 1.35rem;
   border: 0;
   border-radius: 4px;
   background: transparent;
   color: var(--text-muted);
   font-family: var(--font);
-  font-size: 16px;
+  font-size: 8px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
