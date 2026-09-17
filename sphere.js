@@ -283,7 +283,7 @@ const raycaster = new THREE.Raycaster();
 const pointerNDC = new THREE.Vector2();
 
 function maxCamDist() {
-  return radius * 2.75;
+  return radius * 8.25;
 }
 
 function clampCamDist(d) {
@@ -399,7 +399,7 @@ function layoutMetrics() {
   pullMax = radius * 0.26;
   camera.fov = hasTouch ? 76 : 70;
   camera.near = Math.max(0.05, radius * 0.02);
-  camera.far = radius * 10;
+  camera.far = radius * 14;
   camera.updateProjectionMatrix();
 }
 
@@ -482,7 +482,7 @@ function applyPose() {
     camera.lookAt(0, 0, 0);
   }
   camera.near = Math.max(0.05, Math.abs(camDist - radius) * 0.02 + 0.05);
-  camera.far = Math.max(radius * 10, camDist + radius * 4);
+  camera.far = Math.max(radius * 14, camDist + radius * 4);
   camera.updateProjectionMatrix();
   return updateFocus();
 }
