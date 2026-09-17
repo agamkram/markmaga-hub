@@ -1,12 +1,14 @@
 import { APPS } from "./apps.js?v=25";
 
 const MODE_KEY = "markmaga-hub-mode";
+const SPHERE_MOD = "./sphere.js?v=20";
 
 const gridEl = document.getElementById("app-grid");
 const gridPage = document.getElementById("grid-page");
 const sphereViewport = document.getElementById("sphere-viewport");
 const modeBtn = document.getElementById("mode-btn");
 const homeLine = document.getElementById("intro-home");
+const orbitBtn = document.getElementById("orbit-btn");
 
 let mode = "grid";
 
@@ -85,15 +87,25 @@ function setMode(next) {
   saveMode(mode);
 }
 
+function setOrbitUI(on) {
+  if (!orbitBtn) return;
+  const active = !!on;
+  orbitBtn.setAttribute("aria-pressed", active ? "true" : "false");
+  orbitBtn.title = active
+    ? "Stop continuous orbit"
+    : "Slow continuous orbit (tap again to stop)";
+}
+
 async function goSphere() {
   setMode("sphere");
-  const mod = await import("./sphere.js?v=19");
+  const mod = await import(SPHERE_MOD);
   await mod.enterSphere();
+  setOrbitUI(mod.isOrbiting());
 }
 
 async function goGrid() {
   try {
-    const mod = await import("./sphere.js?v=19");
+    const mod = await import(SPHERE_MOD);
     mod.leaveSphere();
   } catch (_) {}
   setMode("grid");
@@ -135,4 +147,15 @@ window.addEventListener("pageshow", function (e) {
 
 modeBtn?.addEventListener("click", function () {
   toggleMode();
+});
+
+orbitBtn?.addEventListener("click", async function (e) {
+  e.preventDefault();
+  e.stopPropagation();
+  if (mode !== "sphere") return;
+  const mod = await import(SPHERE_MOD);
+  await mod.initSphere();
+  const next = !mod.isOrbiting();
+  mod.setOrbiting(next);
+  setOrbitUI(next);
 });

@@ -270,6 +270,9 @@ let downY = 0;
 let lastT = 0;
 let activeId = null;
 let coasting = false;
+let orbiting = false;
+let lastOrbitMs = 0;
+const ORBIT_DEG_PER_SEC = 360 / 100;
 const flickSamples = [];
 let pullMax = 2.8;
 let camDist = 0;
@@ -505,8 +508,16 @@ let focusRaf = 0;
 
 function ensureAnimLoop() {
   if (focusRaf) return;
-  function loop() {
+  function loop(now) {
     focusRaf = 0;
+    if (!sphereActive) return;
+    if (orbiting) {
+      const t = typeof now === "number" ? now : performance.now();
+      if (!lastOrbitMs) lastOrbitMs = t;
+      const dt = Math.min(0.05, (t - lastOrbitMs) / 1000);
+      lastOrbitMs = t;
+      if (dt > 0) yaw -= ORBIT_DEG_PER_SEC * dt;
+    }
     if (coasting && !dragging && !pinching) {
       const friction = 0.93;
       if (Math.abs(velYaw) < 0.04) {
@@ -520,7 +531,7 @@ function ensureAnimLoop() {
     }
     const settling = applyPose();
     renderer.render(scene, camera);
-    if (settling || dragging || coasting || pinching) {
+    if (settling || dragging || coasting || pinching || orbiting) {
       focusRaf = requestAnimationFrame(loop);
     }
   }
@@ -530,7 +541,7 @@ function ensureAnimLoop() {
 function render() {
   const settling = applyPose();
   renderer.render(scene, camera);
-  if (settling || dragging || coasting || pinching) ensureAnimLoop();
+  if (settling || dragging || coasting || pinching || orbiting) ensureAnimLoop();
 }
 
 function isChromeTarget(t) {
@@ -1000,6 +1011,17 @@ window.addEventListener("keydown", function (e) {
   }
 });
 
+export function setOrbiting(on) {
+  orbiting = !!on;
+  if (!orbiting) lastOrbitMs = 0;
+  else if (sphereActive) ensureAnimLoop();
+  return orbiting;
+}
+
+export function isOrbiting() {
+  return orbiting;
+}
+
 export function initSphere() {
   if (bootPromise) return bootPromise;
   const boot = document.getElementById("sphere-boot");
@@ -1022,6 +1044,7 @@ export async function enterSphere() {
   restoreSpherePose();
   resize();
   render();
+  if (orbiting) ensureAnimLoop();
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () {
       if (!sphereActive) return;
@@ -1034,6 +1057,7 @@ export async function enterSphere() {
 export function leaveSphere() {
   if (sphereActive) saveSpherePose();
   sphereActive = false;
+  lastOrbitMs = 0;
   stopCoast();
   dragging = false;
   pinching = false;
