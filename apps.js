@@ -6,9 +6,9 @@ export const APPS = [
     id: "globalflows-app",
     name: "GlobalFlows",
     href: "https://globalflows.markmaga.com",
-    img: "images/ss-globalflows.webp?v=6",
-    imgW: 958,
-    imgH: 2000,
+    img: "images/ss-globalflows.webp?v=7",
+    imgW: 490,
+    imgH: 1024,
     hint: "Live global money machine · liquidity · rates · growth · inflation · risk",
   },
   {
