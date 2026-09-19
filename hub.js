@@ -1,7 +1,7 @@
-import { APPS } from "./apps.js?v=25";
+import { APPS } from "./apps.js?v=26";
 
 const MODE_KEY = "markmaga-hub-mode";
-const SPHERE_MOD = "./sphere.js?v=22";
+const SPHERE_MOD = "./sphere.js?v=23";
 
 const gridEl = document.getElementById("app-grid");
 const gridPage = document.getElementById("grid-page");

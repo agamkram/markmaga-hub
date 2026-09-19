@@ -3,6 +3,15 @@
  */
 export const APPS = [
   {
+    id: "faithmap-app",
+    name: "FaithMap",
+    href: "https://faithmap.markmaga.com",
+    img: "images/ss-faithmap.webp?v=1",
+    imgW: 1124,
+    imgH: 2346,
+    hint: "US houses of worship · Mapped IRS places · 2020 Religion Census",
+  },
+  {
     id: "globalflows-app",
     name: "GlobalFlows",
     href: "https://globalflows.markmaga.com",
