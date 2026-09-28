@@ -6,9 +6,9 @@ export const APPS = [
     id: "dollarvalue-app",
     name: "DollarValue",
     href: "https://dollarvalue-app.vercel.app",
-    img: "images/ss-dollarvalue.webp?v=1",
+    img: "images/ss-dollarvalue.webp?v=2",
     imgW: 1124,
-    imgH: 2180,
+    imgH: 2337,
     hint: "Then vs now · wages taxes debt · several worths, not just CPI",
   },
   {
