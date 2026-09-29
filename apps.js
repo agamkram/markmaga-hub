@@ -6,7 +6,7 @@ export const APPS = [
     id: "dollarvalue-app",
     name: "DollarValue",
     href: "https://dollarvalue-app.vercel.app",
-    img: "images/ss-dollarvalue.webp?v=3",
+    img: "images/ss-dollarvalue.webp?v=4",
     imgW: 1170,
     imgH: 2532,
     hint: "Then vs now · wages, interest, debt vs GDP · not just CPI",
