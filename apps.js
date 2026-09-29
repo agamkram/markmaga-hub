@@ -5,7 +5,7 @@ export const APPS = [
   {
     id: "dollarvalue-app",
     name: "DollarValue",
-    href: "https://dollarvalue-app.vercel.app",
+    href: "https://dollarvalue.markmaga.com",
     img: "images/ss-dollarvalue.webp?v=4",
     imgW: 1170,
     imgH: 2532,
