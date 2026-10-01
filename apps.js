@@ -6,9 +6,9 @@ export const APPS = [
     id: "gridboard-app",
     name: "GridBoard",
     href: "https://gridboard.markmaga.com",
-    img: "images/ss-gridboard.webp",
-    imgW: 1170,
-    imgH: 2532,
+    img: "images/ss-gridboard.webp?v=2",
+    imgW: 1124,
+    imgH: 2348,
     hint: "150 paper grids on 75 Kraken pairs · Neutral vs Long vs buy & hold",
   },
   {
