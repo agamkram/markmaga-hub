@@ -3,6 +3,15 @@
  */
 export const APPS = [
   {
+    id: "gridboard-app",
+    name: "GridBoard",
+    href: "https://gridboard.markmaga.com",
+    img: "images/ss-gridboard.webp",
+    imgW: 1170,
+    imgH: 2532,
+    hint: "150 paper grids on 75 Kraken pairs · Neutral vs Long vs buy & hold",
+  },
+  {
     id: "dollarvalue-app",
     name: "DollarValue",
     href: "https://dollarvalue.markmaga.com",
