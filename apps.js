@@ -3,6 +3,15 @@
  */
 export const APPS = [
   {
+    id: "sailpower-app",
+    name: "SailPower",
+    href: "https://sailpower.markmaga.com",
+    img: "images/ss-sailpower.webp?v=1",
+    imgW: 1170,
+    imgH: 2532,
+    hint: "Face the wind out, edge-on back · watts over each run",
+  },
+  {
     id: "gridboard-app",
     name: "GridBoard",
     href: "https://gridboard.markmaga.com",
