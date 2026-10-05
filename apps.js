@@ -209,7 +209,7 @@ export const APPS = [
     img: "images/ss-todaysmoon.webp",
     imgW: 900,
     imgH: 1836,
-    hint: "Drag slider for phases · tap moon for red · pinch to zoom",
+    hint: "Drag slider for idealized phase shading · tap moon for red · pinch to zoom",
   },
   {
     id: "faucipies-app",
