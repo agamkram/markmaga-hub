@@ -117,7 +117,7 @@ export const APPS = [
     img: "images/ss-supersun.webp?v=1",
     imgW: 1170,
     imgH: 2532,
-    hint: "Hi-res 3D Sun · live space weather · local sky times",
+    hint: "Hi-res 3D Sun · live space weather · rise noon set",
   },
   {
     id: "solardashboard-app",
