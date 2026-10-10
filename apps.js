@@ -93,8 +93,8 @@ export const APPS = [
     hint: "Next flight · ops & specs for all programs · sites map",
   },
   {
-    id: "satellite-app",
-    name: "Orbital View",
+    id: "orbitalview-app",
+    name: "OrbitalView",
     href: "https://orbital.markmaga.com",
     img: "images/ss-orbitalview.webp?v=2",
     imgW: 900,
@@ -109,6 +109,15 @@ export const APPS = [
     imgW: 900,
     imgH: 1862,
     hint: "Hi-res 3D Moon · live phase for your place · rise high set · tides",
+  },
+  {
+    id: "supersun-app",
+    name: "SuperSun",
+    href: "https://supersun.markmaga.com",
+    img: "images/ss-supersun.webp?v=1",
+    imgW: 1170,
+    imgH: 2532,
+    hint: "Hi-res 3D Sun · live space weather · local sky times",
   },
   {
     id: "solardashboard-app",
