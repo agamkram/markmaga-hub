@@ -3,6 +3,15 @@
  */
 export const APPS = [
   {
+    id: "supersun-app",
+    name: "SuperSun",
+    href: "https://supersun.markmaga.com",
+    img: "images/ss-supersun.webp?v=1",
+    imgW: 1170,
+    imgH: 2532,
+    hint: "Hi-res 3D Sun · live space weather · rise noon set",
+  },
+  {
     id: "sailpower-app",
     name: "SailPower",
     href: "https://sailpower.markmaga.com",
@@ -109,15 +118,6 @@ export const APPS = [
     imgW: 900,
     imgH: 1862,
     hint: "Hi-res 3D Moon · live phase for your place · rise high set · tides",
-  },
-  {
-    id: "supersun-app",
-    name: "SuperSun",
-    href: "https://supersun.markmaga.com",
-    img: "images/ss-supersun.webp?v=1",
-    imgW: 1170,
-    imgH: 2532,
-    hint: "Hi-res 3D Sun · live space weather · rise noon set",
   },
   {
     id: "solardashboard-app",
