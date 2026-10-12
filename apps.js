@@ -6,7 +6,7 @@ export const APPS = [
     id: "supersun-app",
     name: "SuperSun",
     href: "https://supersun.markmaga.com",
-    img: "images/ss-supersun.webp?v=2",
+    img: "images/ss-supersun.webp?v=3",
     imgW: 1170,
     imgH: 2532,
     hint: "Hi-res 3D Sun · live space weather · rise noon set",
