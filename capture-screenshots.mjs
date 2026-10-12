@@ -42,7 +42,7 @@ const APPS = [
     geo: true,
   },
   {
-    name: "satellite-app",
+    name: "orbitalview-app",
     url: "http://127.0.0.1:3005/?card",
     waitMs: 3000,
     geo: false,
