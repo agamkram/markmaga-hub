@@ -3,6 +3,15 @@
  */
 export const APPS = [
   {
+    id: "superearth-app",
+    name: "SuperEarth",
+    href: "https://superearth.markmaga.com",
+    img: "images/ss-superearth.webp?v=1",
+    imgW: 1170,
+    imgH: 2532,
+    hint: "Hi-res 3D Earth · live sun, clouds, aurora, and space weather",
+  },
+  {
     id: "supersun-app",
     name: "SuperSun",
     href: "https://supersun.markmaga.com",
@@ -82,15 +91,6 @@ export const APPS = [
     imgW: 900,
     imgH: 1838,
     hint: "Citizen map of the U.S. federal government · Icicle Tree Circles Sankey",
-  },
-  {
-    id: "superearth-app",
-    name: "SuperEarth",
-    href: "https://superearth.markmaga.com",
-    img: "images/ss-superearth.webp?v=1",
-    imgW: 1170,
-    imgH: 2532,
-    hint: "Hi-res 3D Earth · live sun, clouds, aurora, and space weather",
   },
   {
     id: "supermars-app",
